@@ -1,7 +1,10 @@
 
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CtaSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-900 py-20">
       <div className="container mx-auto px-4">
@@ -14,8 +17,19 @@ const CtaSection = () => {
             Get started today and take the first step toward your professional goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg">Find a Course</Button>
-            <Button variant="outline" size="lg">Contact Us</Button>
+            <Button 
+              size="lg"
+              onClick={() => navigate("/courses")}
+            >
+              Find a Course
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => navigate("/contact")}
+            >
+              Contact Us
+            </Button>
           </div>
         </div>
       </div>

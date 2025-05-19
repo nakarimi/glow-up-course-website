@@ -1,9 +1,158 @@
 
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const locations = [
+  "Online",
+  "London",
+  "Manchester",
+  "Birmingham",
+  "Leeds",
+  "Glasgow",
+  "Edinburgh",
+  "Liverpool",
+  "Bristol",
+  "Sheffield"
+];
+
+const subjectsByLocation = {
+  "Online": [
+    "Web Development",
+    "Data Analysis",
+    "Digital Marketing",
+    "Leadership Skills",
+    "Project Management",
+    "UX Design",
+    "Business Analytics",
+    "Python Programming",
+    "Content Writing"
+  ],
+  "London": [
+    "Web Development",
+    "Management Training",
+    "Digital Marketing",
+    "Financial Analysis",
+    "Business Strategy",
+    "UI/UX Design"
+  ],
+  "Manchester": [
+    "Digital Marketing",
+    "Web Development",
+    "Leadership Skills",
+    "Sales Techniques",
+    "Customer Service"
+  ],
+  "Birmingham": [
+    "Project Management",
+    "Business Analytics",
+    "Leadership Skills",
+    "Data Science",
+    "Marketing Strategy"
+  ],
+  "Leeds": [
+    "Digital Marketing",
+    "Content Creation",
+    "SEO Optimization",
+    "Business Management"
+  ],
+  "Glasgow": [
+    "Financial Planning",
+    "Data Analysis",
+    "Project Management",
+    "Business Strategy"
+  ],
+  "Edinburgh": [
+    "Data Analysis",
+    "Digital Marketing",
+    "Leadership Skills",
+    "Business Strategy"
+  ],
+  "Liverpool": [
+    "Web Development",
+    "Digital Marketing",
+    "Business Management",
+    "Marketing Strategy"
+  ],
+  "Bristol": [
+    "UX Design",
+    "Web Development",
+    "Digital Marketing",
+    "Leadership Skills"
+  ],
+  "Sheffield": [
+    "Project Management",
+    "Data Analysis",
+    "Business Strategy",
+    "Marketing Strategy"
+  ]
+};
+
+const allSubjects = Array.from(
+  new Set(
+    Object.values(subjectsByLocation).flatMap(subjects => subjects)
+  )
+).sort();
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  const [location, setLocation] = useState("");
+  const [subject, setSubject] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [subjectSuggestions, setSubjectSuggestions] = useState<string[]>([]);
+  const [showLocationPopover, setShowLocationPopover] = useState(false);
+  const [showSubjectPopover, setShowSubjectPopover] = useState(false);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const subjectInputRef = useRef<HTMLInputElement>(null);
+
+  // Filter location suggestions based on input
+  useEffect(() => {
+    if (location) {
+      const filtered = locations.filter(loc => 
+        loc.toLowerCase().includes(location.toLowerCase())
+      );
+      setLocationSuggestions(filtered);
+    } else {
+      setLocationSuggestions([]);
+    }
+  }, [location]);
+
+  // Filter subject suggestions based on selected location and input
+  useEffect(() => {
+    if (subject) {
+      let availableSubjects = location 
+        ? (subjectsByLocation as Record<string, string[]>)[location] || allSubjects
+        : allSubjects;
+        
+      const filtered = availableSubjects.filter(sub => 
+        sub.toLowerCase().includes(subject.toLowerCase())
+      );
+      setSubjectSuggestions(filtered);
+    } else {
+      setSubjectSuggestions([]);
+    }
+  }, [subject, location]);
+
+  const handleLocationSelect = (loc: string) => {
+    setLocation(loc);
+    setShowLocationPopover(false);
+    setTimeout(() => {
+      subjectInputRef.current?.focus();
+    }, 100);
+  };
+
+  const handleSubjectSelect = (sub: string) => {
+    setSubject(sub);
+    setShowSubjectPopover(false);
+  };
+
+  const handleSearch = () => {
+    navigate(`/courses?location=${encodeURIComponent(location)}&subject=${encodeURIComponent(subject)}`);
+  };
+
   return (
     <div className="relative overflow-hidden">
       {/* Background with overlay */}
@@ -29,17 +178,140 @@ const HeroSection = () => {
                 <label htmlFor="location" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Location
                 </label>
-                <Input id="location" placeholder="e.g. Online" className="w-full" />
+                <Popover open={showLocationPopover} onOpenChange={setShowLocationPopover}>
+                  <PopoverTrigger asChild>
+                    <div className="relative">
+                      <Input 
+                        id="location" 
+                        ref={locationInputRef}
+                        placeholder="e.g. Online" 
+                        className="w-full" 
+                        value={location}
+                        onChange={(e) => {
+                          setLocation(e.target.value);
+                          if (e.target.value) {
+                            setShowLocationPopover(true);
+                          }
+                        }}
+                        onFocus={() => {
+                          if (location) {
+                            setShowLocationPopover(true);
+                          }
+                        }}
+                      />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 max-h-[200px] overflow-y-auto" align="start">
+                    {locationSuggestions.length > 0 ? (
+                      <ul className="py-2">
+                        {locationSuggestions.map((loc) => (
+                          <li 
+                            key={loc} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleLocationSelect(loc)}
+                          >
+                            {loc}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : location ? (
+                      <div className="p-4 text-sm text-muted-foreground">
+                        No locations found
+                      </div>
+                    ) : (
+                      <ul className="py-2">
+                        {locations.map((loc) => (
+                          <li 
+                            key={loc} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleLocationSelect(loc)}
+                          >
+                            {loc}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </PopoverContent>
+                </Popover>
               </div>
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Subject
                 </label>
-                <Input id="subject" placeholder="e.g. My Course/Training" className="w-full" />
+                <Popover open={showSubjectPopover} onOpenChange={setShowSubjectPopover}>
+                  <PopoverTrigger asChild>
+                    <div className="relative">
+                      <Input 
+                        id="subject" 
+                        ref={subjectInputRef}
+                        placeholder="e.g. My Course/Training" 
+                        className="w-full" 
+                        value={subject}
+                        onChange={(e) => {
+                          setSubject(e.target.value);
+                          if (e.target.value) {
+                            setShowSubjectPopover(true);
+                          }
+                        }}
+                        onFocus={() => {
+                          if (subject) {
+                            setShowSubjectPopover(true);
+                          }
+                        }}
+                      />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 max-h-[200px] overflow-y-auto" align="start">
+                    {subjectSuggestions.length > 0 ? (
+                      <ul className="py-2">
+                        {subjectSuggestions.map((sub) => (
+                          <li 
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
+                          >
+                            {sub}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : subject ? (
+                      <div className="p-4 text-sm text-muted-foreground">
+                        No subjects found
+                      </div>
+                    ) : location && (subjectsByLocation as Record<string, string[]>)[location] ? (
+                      <ul className="py-2">
+                        {(subjectsByLocation as Record<string, string[]>)[location].map((sub) => (
+                          <li 
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
+                          >
+                            {sub}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <ul className="py-2">
+                        {allSubjects.slice(0, 10).map((sub) => (
+                          <li 
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
+                          >
+                            {sub}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
-            <Button className="w-full md:w-auto">
+            <Button 
+              className="w-full md:w-auto"
+              onClick={handleSearch}
+            >
               <Search className="h-4 w-4 mr-2" />
               Find Courses
             </Button>

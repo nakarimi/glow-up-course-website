@@ -1,12 +1,13 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, Filter, Grid, List } from "lucide-react";
+import { Search, Filter, Grid, List, Calendar } from "lucide-react";
 
 const coursesData = [
   {
@@ -17,6 +18,7 @@ const coursesData = [
     duration: "2 days",
     price: 299,
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-15", "2025-07-10", "2025-08-22"]
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const coursesData = [
     duration: "5 days",
     price: 799,
     image: "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-20", "2025-07-15", "2025-08-10"]
   },
   {
     id: 3,
@@ -35,6 +38,7 @@ const coursesData = [
     duration: "3 days",
     price: 499,
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-05", "2025-07-22", "2025-08-15"]
   },
   {
     id: 4,
@@ -44,6 +48,7 @@ const coursesData = [
     duration: "2 days",
     price: 349,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-12", "2025-07-18", "2025-08-25"]
   },
   {
     id: 5,
@@ -53,6 +58,7 @@ const coursesData = [
     duration: "1 day",
     price: 199,
     image: "https://images.unsplash.com/photo-1541844053589-346841d0b34c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-08", "2025-07-05", "2025-08-12"]
   },
   {
     id: 6,
@@ -62,17 +68,27 @@ const coursesData = [
     duration: "4 days",
     price: 599,
     image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    availableDates: ["2025-06-25", "2025-07-20", "2025-08-18"]
   },
 ];
 
+// Get all available dates from courses
+const getAllAvailableDates = () => {
+  const dates = coursesData.flatMap(course => course.availableDates);
+  return [...new Set(dates)].sort();
+};
+
 const locationOptions = ["Online", "London", "Manchester", "Birmingham"];
 const categoryOptions = ["Business", "Technology", "Marketing", "Health & Safety"];
+const availableDatesOptions = getAllAvailableDates();
 
 const Courses = () => {
+  const navigate = useNavigate();
   const [view, setView] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>("");
   
   const handleLocationChange = (location: string) => {
     setSelectedLocations(prev => 
@@ -89,13 +105,26 @@ const Courses = () => {
         : [...prev, category]
     );
   };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
   
   const filteredCourses = coursesData.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLocation = selectedLocations.length === 0 || selectedLocations.includes(course.location);
     const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(course.category);
-    return matchesSearch && matchesLocation && matchesCategory;
+    const matchesDate = !selectedDate || course.availableDates.includes(selectedDate);
+    return matchesSearch && matchesLocation && matchesCategory && matchesDate;
   });
+
+  const handleViewCourse = (courseId: number) => {
+    navigate(`/course/${courseId}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -135,6 +164,25 @@ const Courses = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h3 className="font-medium mb-3">Available Dates</h3>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <select 
+                        className="w-full pl-10 p-2 border rounded-md bg-background dark:bg-slate-800 dark:border-slate-700"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                      >
+                        <option value="">All Dates</option>
+                        {availableDatesOptions.map(date => (
+                          <option key={date} value={date}>
+                            {formatDate(date)}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   
@@ -237,10 +285,26 @@ const Courses = () => {
                             <p>Location: {course.location}</p>
                             <p>Duration: {course.duration}</p>
                             <p className="font-medium text-foreground mt-2">${course.price}</p>
+                            <div className="mt-2 text-xs">
+                              <p className="font-medium">Available Dates:</p>
+                              <ul className="list-disc list-inside">
+                                {course.availableDates.slice(0, 2).map((date, index) => (
+                                  <li key={index}>{formatDate(date)}</li>
+                                ))}
+                                {course.availableDates.length > 2 && (
+                                  <li>+{course.availableDates.length - 2} more dates</li>
+                                )}
+                              </ul>
+                            </div>
                           </div>
                         </CardContent>
                         <CardFooter>
-                          <Button className="w-full">View Course</Button>
+                          <Button 
+                            className="w-full"
+                            onClick={() => handleViewCourse(course.id)}
+                          >
+                            View Course
+                          </Button>
                         </CardFooter>
                       </Card>
                     ))}
@@ -270,11 +334,21 @@ const Courses = () => {
                             <div className="text-sm text-muted-foreground mb-4">
                               <p>Location: {course.location}</p>
                               <p>Duration: {course.duration}</p>
+                              <div className="mt-2">
+                                <p className="font-medium">Available Dates:</p>
+                                <ul className="list-disc list-inside">
+                                  {course.availableDates.map((date, index) => (
+                                    <li key={index}>{formatDate(date)}</li>
+                                  ))}
+                                </ul>
+                              </div>
                             </div>
                           </div>
                           <div className="flex justify-between items-center">
                             <p className="font-medium">${course.price}</p>
-                            <Button>View Course</Button>
+                            <Button onClick={() => handleViewCourse(course.id)}>
+                              View Course
+                            </Button>
                           </div>
                         </div>
                       </div>

@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -35,7 +36,7 @@ const courses = [
   }
 ];
 
-const CourseCard = ({ course }: { course: typeof courses[0] }) => (
+const CourseCard = ({ course, onViewCourse }: { course: typeof courses[0], onViewCourse: (id: number) => void }) => (
   <Card className="hover-scale h-full flex flex-col">
     <div className="h-48 overflow-hidden rounded-t-md">
       <img 
@@ -56,13 +57,24 @@ const CourseCard = ({ course }: { course: typeof courses[0] }) => (
       <p className="text-sm text-muted-foreground">{course.description}</p>
     </CardContent>
     <CardFooter>
-      <Button variant="outline" className="w-full">View Course</Button>
+      <Button 
+        variant="outline" 
+        className="w-full"
+        onClick={() => onViewCourse(course.id)}
+      >
+        View Course
+      </Button>
     </CardFooter>
   </Card>
 );
 
 const FeaturedCourses = () => {
+  const navigate = useNavigate();
   const [visibleCourses, setVisibleCourses] = useState(courses);
+
+  const handleViewCourse = (courseId: number) => {
+    navigate(`/course/${courseId}`);
+  };
 
   return (
     <section className="py-16 bg-white dark:bg-slate-900">
@@ -84,12 +96,17 @@ const FeaturedCourses = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {visibleCourses.map(course => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={course.id} course={course} onViewCourse={handleViewCourse} />
           ))}
         </div>
 
         <div className="text-center mt-10">
-          <Button variant="default">Browse All Courses</Button>
+          <Button 
+            variant="default"
+            onClick={() => navigate("/courses")}
+          >
+            Browse All Courses
+          </Button>
         </div>
       </div>
     </section>
