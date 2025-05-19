@@ -118,6 +118,7 @@ const Checkout = () => {
     postalCode: currentUser.postalCode,
     country: currentUser.country,
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   // Tax calculation
   const tax = Math.round(subtotal * 0.2);
@@ -213,7 +214,14 @@ const Checkout = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation would go here
+    if (!termsAccepted) {
+      toast({
+        title: "Terms and conditions required",
+        description: "Please accept the terms and conditions before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     toast({
       title: "Payment successful!",
@@ -375,7 +383,13 @@ const Checkout = () => {
                     <Checkbox 
                       id="willBeDelegate"
                       checked={willBeDelegate}
-                      onCheckedChange={(checked) => setWillBeDelegate(!!checked)}
+                      onCheckedChange={(checked) => {
+                        const isChecked = !!checked;
+                        setWillBeDelegate(isChecked);
+                        
+                        // If unchecked, don't clear the first delegate
+                        // The auto-fill effect will handle setting the data when checked
+                      }}
                     />
                     <label 
                       htmlFor="willBeDelegate"
@@ -624,6 +638,19 @@ const Checkout = () => {
                 </CardContent>
               </Card>
               
+              {/* Terms and Conditions */}
+              <div className="flex items-center gap-2">
+                <Checkbox 
+                  id="terms"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) => setTermsAccepted(!!checked)}
+                  required
+                />
+                <label htmlFor="terms" className="text-sm">
+                  I accept the <span className="text-blue-600 hover:underline cursor-pointer">Terms and Conditions</span>
+                </label>
+              </div>
+              
               <div className="flex justify-end gap-4 mt-8">
                 <Button type="button" variant="outline" onClick={() => navigate(-1)}>
                   Back
@@ -704,7 +731,6 @@ const Checkout = () => {
                       <div className="mt-4 text-xs text-muted-foreground">
                         <p>I understand that from any non-refundable and/or non-transferable booking.</p>
                         <p className="my-1">My order is subject to the complete booking terms & conditions.</p>
-                        <p>I agree to the <span className="text-blue-600 cursor-pointer">Terms of use</span></p>
                       </div>
                     </div>
                   </CardContent>

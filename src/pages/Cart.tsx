@@ -5,13 +5,26 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { CartContext } from "@/context/CartContext";
-import { Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, subtotal, updateCartItemAttendees } = useContext(CartContext);
-  
+  const { cartItems, removeFromCart, updateCartItemAttendees, subtotal, clearCart } = useContext(CartContext);
+
+  const handleQuantityChange = (id: string, change: number, currentAttendees: number) => {
+    const newAttendees = currentAttendees + change;
+    if (newAttendees > 0) {
+      updateCartItemAttendees(id, newAttendees);
+    }
+  };
+
+  const handleRemoveItem = (id: string) => {
+    removeFromCart(id);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -19,125 +32,143 @@ const Cart = () => {
       day: 'numeric'
     });
   };
-  
-  const handleProceedToCheckout = () => {
-    navigate("/checkout");
+
+  const handleCheckout = () => {
+    // Navigate to the checkout page
+    navigate('/checkout');
   };
-  
-  const tax = Math.round(subtotal * 0.2);
-  const total = subtotal + tax;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <div className="bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 pt-32 pb-16">
+      <main className="flex-1 pt-28 pb-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">Your Cart</h1>
+          <div className="flex items-center mb-8">
+            <ShoppingCart className="h-6 w-6 mr-3" />
+            <h1 className="text-3xl font-bold">Your Cart</h1>
+          </div>
           
           {cartItems.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg mb-6">Your cart is empty.</p>
-              <Button onClick={() => navigate("/courses")}>Browse Courses</Button>
+            <div className="text-center py-16">
+              <div className="inline-flex justify-center items-center w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 mb-6">
+                <ShoppingCart className="h-12 w-12 text-blue-500 dark:text-blue-300" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+              <p className="text-muted-foreground mb-6">Looks like you haven't added any courses to your cart yet.</p>
+              <Button onClick={() => navigate("/courses")}>
+                Browse Courses
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Cart items */}
               <div className="lg:col-span-2">
-                {cartItems.map(item => (
-                  <Card key={item.id} className="mb-4">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="h-32 w-32 rounded overflow-hidden flex-shrink-0">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Cart Items</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    {cartItems.map(item => (
+                      <div key={item.id} className="flex flex-col md:flex-row border-b p-6 last:border-b-0">
+                        <div className="md:w-1/4 h-32 mb-4 md:mb-0 overflow-hidden rounded-md">
                           <img 
                             src={item.image} 
-                            alt={item.title}
-                            className="h-full w-full object-cover" 
+                            alt={item.title} 
+                            className="w-full h-full object-cover" 
                           />
                         </div>
-                        <div className="flex-grow">
-                          <h3 className="text-xl font-medium mb-2">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-1">
-                            Date: {formatDate(item.date)}
-                          </p>
-                          <div className="flex items-center gap-4 mt-3">
-                            <label className="text-sm">
-                              Attendees:
-                              <select
-                                className="ml-2 p-1 border rounded-md dark:bg-slate-800 dark:border-slate-700"
-                                value={item.attendees}
-                                onChange={(e) => updateCartItemAttendees(item.id, Number(e.target.value))}
+                        <div className="md:w-3/4 md:pl-6 flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between items-start mb-2">
+                              <h3 className="text-xl font-medium">{item.title}</h3>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8 text-red-500"
+                                onClick={() => handleRemoveItem(item.id)}
                               >
-                                {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
-                                  <option key={num} value={num}>
-                                    {num}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                            <p className="text-lg font-medium ml-auto">
-                              ${item.price * item.attendees}
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Date: {formatDate(item.date)}
                             </p>
+                            <p className="font-medium">${item.price} per attendee</p>
+                          </div>
+                          <div className="flex justify-between items-center mt-4">
+                            <div className="flex items-center">
+                              <span className="mr-2">Attendees:</span>
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                className="h-8 w-8"
+                                onClick={() => handleQuantityChange(item.id, -1, item.attendees)}
+                                disabled={item.attendees <= 1}
+                              >
+                                <Minus className="h-3 w-3" />
+                              </Button>
+                              <span className="w-10 text-center">{item.attendees}</span>
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                className="h-8 w-8"
+                                onClick={() => handleQuantityChange(item.id, 1, item.attendees)}
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
+                            </div>
+                            <span className="font-bold">${(item.price * item.attendees).toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                    <CardFooter className="border-t px-6 py-3 flex justify-between">
-                      <p className="text-sm text-muted-foreground">
-                        ${item.price} per attendee
-                      </p>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="text-red-500 hover:text-red-600"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        Remove
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
+                    ))}
+                  </CardContent>
+                  <CardFooter className="flex justify-between p-6">
+                    <Button variant="outline" onClick={() => navigate("/courses")}>
+                      Continue Shopping
+                    </Button>
+                    <Button variant="ghost" onClick={() => clearCart()}>
+                      Clear Cart
+                    </Button>
+                  </CardFooter>
+                </Card>
               </div>
               
-              {/* Order summary */}
               <div>
                 <Card className="sticky top-24">
                   <CardHeader>
                     <CardTitle>Order Summary</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between mb-2">
+                    <div className="flex justify-between">
                       <span>Subtotal</span>
                       <span>${subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between mb-2">
-                      <span>Tax (20%)</span>
-                      <span>${tax.toFixed(2)}</span>
+                    <div className="flex justify-between">
+                      <span>VAT (20%)</span>
+                      <span>${(subtotal * 0.2).toFixed(2)}</span>
                     </div>
                     
-                    <div className="pt-4 border-t">
-                      <div className="flex justify-between items-center">
-                        <input 
-                          type="text" 
-                          placeholder="Coupon code" 
-                          className="flex-1 p-2 border rounded-l-md focus:outline-none dark:bg-slate-800 dark:border-slate-700"
-                        />
-                        <Button variant="secondary" className="rounded-l-none">
-                          Apply
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t">
-                      <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                    <div className="flex items-center mt-4">
+                      <Input 
+                        placeholder="Coupon code" 
+                        className="flex-1 rounded-r-none"
+                      />
+                      <Button variant="secondary" className="rounded-l-none">
+                        Apply
+                      </Button>
                     </div>
                   </CardContent>
-                  <CardFooter>
+                  <Separator />
+                  <CardFooter className="flex flex-col p-6">
+                    <div className="flex justify-between w-full mb-4">
+                      <span className="font-bold">Total</span>
+                      <span className="font-bold">${(subtotal * 1.2).toFixed(2)}</span>
+                    </div>
                     <Button 
-                      className="w-full"
-                      onClick={handleProceedToCheckout}
+                      className="w-full" 
+                      size="lg"
+                      onClick={handleCheckout}
                     >
                       Proceed to Checkout
                     </Button>
@@ -147,7 +178,7 @@ const Cart = () => {
             </div>
           )}
         </div>
-      </div>
+      </main>
       
       <Footer />
     </div>

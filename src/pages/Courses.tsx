@@ -134,6 +134,10 @@ const Courses = () => {
       [courseId]: date
     }));
   };
+  
+  const handleCardClick = (courseId: number) => {
+    navigate(`/course/${courseId}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -274,7 +278,7 @@ const Courses = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredCourses.map(course => (
                       <Card key={course.id} className="overflow-hidden hover-scale">
-                        <div className="h-48 overflow-hidden">
+                        <div className="h-48 overflow-hidden cursor-pointer" onClick={() => handleCardClick(course.id)}>
                           <img 
                             src={course.image} 
                             alt={course.title} 
@@ -283,7 +287,9 @@ const Courses = () => {
                         </div>
                         <CardHeader>
                           <div className="flex justify-between items-start">
-                            <CardTitle className="text-xl">{course.title}</CardTitle>
+                            <CardTitle className="text-xl cursor-pointer" onClick={() => handleCardClick(course.id)}>
+                              {course.title}
+                            </CardTitle>
                             <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-800 dark:text-blue-200">
                               {course.category}
                             </span>
@@ -332,7 +338,10 @@ const Courses = () => {
                         key={course.id} 
                         className="flex flex-col md:flex-row gap-4 bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 hover-scale"
                       >
-                        <div className="md:w-1/4 h-40 md:h-auto overflow-hidden rounded-md">
+                        <div 
+                          className="md:w-1/4 h-40 md:h-auto overflow-hidden rounded-md cursor-pointer"
+                          onClick={() => handleCardClick(course.id)}
+                        >
                           <img 
                             src={course.image} 
                             alt={course.title} 
@@ -342,7 +351,12 @@ const Courses = () => {
                         <div className="md:w-3/4 flex flex-col justify-between">
                           <div>
                             <div className="flex justify-between items-start mb-2">
-                              <h3 className="text-xl font-bold">{course.title}</h3>
+                              <h3 
+                                className="text-xl font-bold cursor-pointer"
+                                onClick={() => handleCardClick(course.id)}
+                              >
+                                {course.title}
+                              </h3>
                               <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-800 dark:text-blue-200">
                                 {course.category}
                               </span>
@@ -351,9 +365,7 @@ const Courses = () => {
                               <p>Location: {course.location}</p>
                               <p>Duration: {course.duration}</p>
                             </div>
-                          </div>
-                          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                            <div className="w-full md:w-1/2">
+                            <div className="mb-4">
                               <label htmlFor={`list-date-${course.id}`} className="block text-sm font-medium mb-1">
                                 Select a date:
                               </label>
@@ -371,12 +383,12 @@ const Courses = () => {
                                 ))}
                               </select>
                             </div>
-                            <div className="flex items-center justify-between w-full md:w-1/2">
-                              <p className="font-medium">${course.price}</p>
-                              <Button onClick={() => handleViewCourse(course.id)}>
-                                View Course
-                              </Button>
-                            </div>
+                          </div>
+                          <div className="flex items-center justify-between w-full">
+                            <p className="font-medium">${course.price}</p>
+                            <Button onClick={() => handleViewCourse(course.id)}>
+                              View Course
+                            </Button>
                           </div>
                         </div>
                       </div>

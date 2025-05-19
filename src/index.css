@@ -4,7 +4,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  [data-color="blue"] {
     --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
@@ -35,6 +36,36 @@
 
     --radius: 0.5rem;
   }
+  
+  [data-color="green"] {
+    --primary: 142 76% 36%;
+    --primary-foreground: 355 100% 100%;
+    --ring: 142 76% 36%;
+  }
+  
+  [data-color="yellow"] {
+    --primary: 48 96% 53%;
+    --primary-foreground: 0 0% 20%;
+    --ring: 48 96% 53%;
+  }
+  
+  [data-color="orange"] {
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 24 95% 53%;
+  }
+  
+  [data-color="sky"] {
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 199 89% 48%;
+  }
+  
+  [data-color="purple"] {
+    --primary: 270 95% 65%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 270 95% 65%;
+  }
 
   .dark {
     --background: 222.2 84% 4.9%;
@@ -45,9 +76,6 @@
 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 100% 50%;
-    --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;

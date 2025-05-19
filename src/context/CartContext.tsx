@@ -55,7 +55,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
-    setCartItems(prev => [...prev, item]);
+    // Ensure attendees is correctly passed and stored
+    const newItem = {
+      ...item,
+      attendees: item.attendees || 1 // Default to 1 if somehow not provided
+    };
+    setCartItems(prev => [...prev, newItem]);
   };
 
   const removeFromCart = (id: string) => {
