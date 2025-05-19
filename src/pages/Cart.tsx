@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -34,8 +33,10 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    // Navigate to the checkout page
-    navigate('/checkout');
+    // Navigate to the checkout page, ensuring it works correctly
+    if (cartItems.length > 0) {
+      navigate('/checkout');
+    }
   };
 
   return (
