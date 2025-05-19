@@ -89,6 +89,7 @@ const Courses = () => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedCourseDates, setSelectedCourseDates] = useState<{[key: number]: string}>({});
   
   const handleLocationChange = (location: string) => {
     setSelectedLocations(prev => 
@@ -123,7 +124,15 @@ const Courses = () => {
   });
 
   const handleViewCourse = (courseId: number) => {
-    navigate(`/course/${courseId}`);
+    const selectedDateForCourse = selectedCourseDates[courseId] || "";
+    navigate(`/course/${courseId}${selectedDateForCourse ? `?date=${selectedDateForCourse}` : ''}`);
+  };
+
+  const handleDateChange = (courseId: number, date: string) => {
+    setSelectedCourseDates(prev => ({
+      ...prev,
+      [courseId]: date
+    }));
   };
 
   return (
@@ -285,16 +294,23 @@ const Courses = () => {
                             <p>Location: {course.location}</p>
                             <p>Duration: {course.duration}</p>
                             <p className="font-medium text-foreground mt-2">${course.price}</p>
-                            <div className="mt-2 text-xs">
-                              <p className="font-medium">Available Dates:</p>
-                              <ul className="list-disc list-inside">
-                                {course.availableDates.slice(0, 2).map((date, index) => (
-                                  <li key={index}>{formatDate(date)}</li>
+                            <div className="mt-2">
+                              <label htmlFor={`date-${course.id}`} className="block text-sm font-medium mb-1">
+                                Select a date:
+                              </label>
+                              <select
+                                id={`date-${course.id}`}
+                                className="w-full p-2 border rounded-md dark:bg-slate-800 dark:border-slate-700"
+                                value={selectedCourseDates[course.id] || ""}
+                                onChange={(e) => handleDateChange(course.id, e.target.value)}
+                              >
+                                <option value="">Choose a date</option>
+                                {course.availableDates.map(date => (
+                                  <option key={date} value={date}>
+                                    {formatDate(date)}
+                                  </option>
                                 ))}
-                                {course.availableDates.length > 2 && (
-                                  <li>+{course.availableDates.length - 2} more dates</li>
-                                )}
-                              </ul>
+                              </select>
                             </div>
                           </div>
                         </CardContent>
@@ -334,21 +350,33 @@ const Courses = () => {
                             <div className="text-sm text-muted-foreground mb-4">
                               <p>Location: {course.location}</p>
                               <p>Duration: {course.duration}</p>
-                              <div className="mt-2">
-                                <p className="font-medium">Available Dates:</p>
-                                <ul className="list-disc list-inside">
-                                  {course.availableDates.map((date, index) => (
-                                    <li key={index}>{formatDate(date)}</li>
-                                  ))}
-                                </ul>
-                              </div>
                             </div>
                           </div>
-                          <div className="flex justify-between items-center">
-                            <p className="font-medium">${course.price}</p>
-                            <Button onClick={() => handleViewCourse(course.id)}>
-                              View Course
-                            </Button>
+                          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div className="w-full md:w-1/2">
+                              <label htmlFor={`list-date-${course.id}`} className="block text-sm font-medium mb-1">
+                                Select a date:
+                              </label>
+                              <select
+                                id={`list-date-${course.id}`}
+                                className="w-full p-2 border rounded-md dark:bg-slate-800 dark:border-slate-700"
+                                value={selectedCourseDates[course.id] || ""}
+                                onChange={(e) => handleDateChange(course.id, e.target.value)}
+                              >
+                                <option value="">Choose a date</option>
+                                {course.availableDates.map(date => (
+                                  <option key={date} value={date}>
+                                    {formatDate(date)}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="flex items-center justify-between w-full md:w-1/2">
+                              <p className="font-medium">${course.price}</p>
+                              <Button onClick={() => handleViewCourse(course.id)}>
+                                View Course
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>

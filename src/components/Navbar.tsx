@@ -1,15 +1,19 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import AuthDialogs from "@/components/AuthDialogs";
+import { CartContext } from "@/context/CartContext";
+import { Badge } from "@/components/ui/badge";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { cartItems } = useContext(CartContext);
+  const cartItemCount = cartItems.length;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +66,16 @@ const Navbar = () => {
         {/* Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
           <ThemeToggle />
+          <Link to="/cart" className="relative">
+            <Button variant="outline" size="icon">
+              <ShoppingCart className="h-5 w-5" />
+              {cartItemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 min-w-[20px] h-5 p-0 flex items-center justify-center">
+                  {cartItemCount}
+                </Badge>
+              )}
+            </Button>
+          </Link>
           <AuthDialogs variant="login" />
           <AuthDialogs variant="signup" />
         </div>
@@ -69,6 +83,17 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         <div className="flex items-center space-x-4 md:hidden">
           <ThemeToggle />
+          
+          <Link to="/cart" className="relative">
+            <Button variant="outline" size="icon">
+              <ShoppingCart className="h-5 w-5" />
+              {cartItemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 min-w-[20px] h-5 p-0 flex items-center justify-center">
+                  {cartItemCount}
+                </Badge>
+              )}
+            </Button>
+          </Link>
           
           <Sheet>
             <SheetTrigger asChild>

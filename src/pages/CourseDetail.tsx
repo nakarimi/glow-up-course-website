@@ -1,12 +1,15 @@
 
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, User } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, Clock, MapPin, User, ShoppingCart } from "lucide-react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { CartContext } from "@/context/CartContext";
+import { useContext } from "react";
 
 // Mock course data
 const coursesData = [
@@ -99,10 +102,22 @@ const coursesData = [
 const CourseDetail = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
+  const { addToCart } = useContext(CartContext);
+  
+  const preselectedDate = searchParams.get("date") || "";
+  const [selectedDate, setSelectedDate] = useState<string>(preselectedDate);
+  const [attendeesCount, setAttendeesCount] = useState<number>(1);
   
   const course = coursesData.find(c => c.id === Number(courseId));
   
+  useEffect(() => {
+    if (preselectedDate) {
+      setSelectedDate(preselectedDate);
+    }
+  }, [preselectedDate]);
+
   if (!course) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -121,10 +136,41 @@ const CourseDetail = () => {
 
   const handleEnroll = () => {
     if (!selectedDate) {
-      alert("Please select a date before proceeding");
+      toast({
+        title: "Please select a date",
+        description: "Select a date before proceeding",
+        variant: "destructive",
+      });
       return;
     }
-    navigate(`/checkout/${courseId}?date=${selectedDate}`);
+    
+    navigate(`/checkout/${courseId}?date=${selectedDate}&attendees=${attendeesCount}`);
+  };
+  
+  const handleAddToCart = () => {
+    if (!selectedDate) {
+      toast({
+        title: "Please select a date",
+        description: "Select a date before adding to cart",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    addToCart({
+      id: Date.now().toString(),
+      courseId: course.id,
+      title: course.title,
+      price: course.price,
+      date: selectedDate,
+      attendees: attendeesCount,
+      image: course.image
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${course.title} has been added to your cart`,
+    });
   };
 
   return (
@@ -226,14 +272,46 @@ const CourseDetail = () => {
                     </select>
                   </div>
                   
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    onClick={handleEnroll}
-                  >
-                    Enroll Now
-                  </Button>
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium mb-2">
+                      Number of attendees:
+                    </label>
+                    <select 
+                      className="w-full p-2 border rounded-md dark:bg-slate-800 dark:border-slate-700"
+                      value={attendeesCount}
+                      onChange={(e) => setAttendeesCount(Number(e.target.value))}
+                      required
+                    >
+                      {Array.from({ length: course.maxAttendees }, (_, i) => i + 1).map(num => (
+                        <option key={num} value={num}>
+                          {num} {num === 1 ? 'attendee' : 'attendees'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    <Button 
+                      className="w-full" 
+                      size="lg"
+                      onClick={handleEnroll}
+                    >
+                      Enroll Now
+                    </Button>
+                    
+                    <Button 
+                      className="w-full" 
+                      variant="outline"
+                      onClick={handleAddToCart}
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </div>
                 </CardContent>
+                <CardFooter className="text-center text-sm text-muted-foreground">
+                  Secure checkout • Money back guarantee
+                </CardFooter>
               </Card>
             </div>
           </div>
