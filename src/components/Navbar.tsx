@@ -1,129 +1,138 @@
 
-import { useState, useEffect, useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import ThemeToggle from "@/components/ThemeToggle";
-import { Menu, ShoppingCart } from "lucide-react";
+import { 
+  Sheet, 
+  SheetTrigger, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetClose 
+} from "@/components/ui/sheet";
 import AuthDialogs from "@/components/AuthDialogs";
-import { CartContext } from "@/context/CartContext";
-import { Badge } from "@/components/ui/badge";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useCart } from "@/context/CartContext";
+import ThemeSelector from "@/components/ThemeSelector";
+import { useMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { cartItems } = useCart();
+  const isMobile = useMobile();
   const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
-  const { cartItems } = useContext(CartContext);
-  const cartItemCount = cartItems.length;
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 10);
     };
-
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive = (path: string) => location.pathname === path;
-
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Courses", path: "/courses" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
+  const menuItems = [
+    { label: "Home", path: "/" },
+    { label: "Courses", path: "/course-list" },
+    { label: "About", path: "/about" },
+    { label: "News", path: "/news" },
+    { label: "Contact", path: "/contact" },
   ];
-
+  
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white dark:bg-slate-900 shadow-md py-4"
-          : "bg-transparent py-6"
+    <header 
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        isScrolled 
+          ? "bg-white/90 dark:bg-slate-900/90 shadow-md backdrop-blur-sm" 
+          : "bg-white dark:bg-slate-900"
       }`}
     >
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-          CourseHub
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive(link.path)
-                  ? "bg-blue-50 text-blue-700 dark:bg-slate-800 dark:text-blue-400"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-              }`}
-            >
-              {link.name}
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
+            <Link to="/" className="text-2xl font-bold text-primary mr-8">
+              TrainHub
             </Link>
-          ))}
-        </nav>
-
-        {/* Action Buttons */}
-        <div className="hidden md:flex items-center space-x-4">
-          <ThemeToggle />
-          <Link to="/cart" className="relative">
-            <Button variant="outline" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 min-w-[20px] h-5 p-0 flex items-center justify-center">
-                  {cartItemCount}
-                </Badge>
-              )}
-            </Button>
-          </Link>
-          <AuthDialogs variant="login" />
-          <AuthDialogs variant="signup" />
-        </div>
-
-        {/* Mobile Navigation */}
-        <div className="flex items-center space-x-4 md:hidden">
-          <ThemeToggle />
-          
-          <Link to="/cart" className="relative">
-            <Button variant="outline" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 min-w-[20px] h-5 p-0 flex items-center justify-center">
-                  {cartItemCount}
-                </Badge>
-              )}
-            </Button>
-          </Link>
-          
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4 mt-8">
-                {navLinks.map((link) => (
+            
+            {/* Desktop navigation */}
+            {!isMobile && (
+              <nav className="hidden md:flex items-center space-x-6">
+                {menuItems.map((item) => (
                   <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`px-4 py-3 rounded-md text-base font-medium transition-colors ${
-                      isActive(link.path)
-                        ? "bg-blue-50 text-blue-700 dark:bg-slate-800 dark:text-blue-400"
-                        : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                    }`}
+                    key={item.path}
+                    to={item.path}
+                    className="text-sm font-medium text-muted-foreground hover:text-primary"
                   >
-                    {link.name}
+                    {item.label}
                   </Link>
                 ))}
               </nav>
-              <div className="mt-8 space-y-4">
-                <AuthDialogs variant="login" triggerClassName="w-full" />
-                <AuthDialogs variant="signup" triggerClassName="w-full" />
-              </div>
-            </SheetContent>
-          </Sheet>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <ThemeSelector />
+            <ThemeToggle />
+            
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+                {totalCartItems > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center text-xs text-primary-foreground">
+                    {totalCartItems}
+                  </span>
+                )}
+                <span className="sr-only">Shopping cart</span>
+              </Button>
+            </Link>
+            
+            {/* Auth buttons */}
+            <div className="hidden md:flex space-x-2">
+              <AuthDialogs variant="login" />
+              <AuthDialogs variant="signup" />
+            </div>
+            
+            {/* Mobile menu button */}
+            {isMobile && (
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <SheetHeader>
+                    <SheetTitle className="text-left text-2xl font-bold">
+                      TrainHub
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6 flex flex-col space-y-4">
+                    {menuItems.map((item) => (
+                      <SheetClose asChild key={item.path}>
+                        <Link
+                          to={item.path}
+                          className="text-lg font-medium text-foreground hover:text-primary"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      </SheetClose>
+                    ))}
+                    <div className="pt-4 border-t flex flex-col space-y-2">
+                      <AuthDialogs variant="login" triggerClassName="w-full justify-center" />
+                      <AuthDialogs variant="signup" triggerClassName="w-full justify-center" />
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
     </header>
