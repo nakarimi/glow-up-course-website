@@ -14,14 +14,15 @@ import {
 } from "@/components/ui/sheet";
 import AuthDialogs from "@/components/AuthDialogs";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useCart } from "@/context/CartContext";
+import { CartContext } from "@/context/CartContext";
+import { useContext } from "react";
 import ThemeSelector from "@/components/ThemeSelector";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { cartItems } = useCart();
-  const isMobile = useMobile();
+  const { cartItems } = useContext(CartContext);
+  const isMobile = useIsMobile();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
