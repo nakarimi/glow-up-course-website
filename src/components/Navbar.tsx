@@ -26,7 +26,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalCartItems = cartItems.reduce((total, item) => total + (item.attendees || 1), 0);
   
   useEffect(() => {
     const handleScroll = () => {

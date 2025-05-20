@@ -126,7 +126,7 @@ const CourseDetail = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Course not found</h2>
             <p className="mb-6">The course you're looking for doesn't exist or has been removed.</p>
-            <Button onClick={() => navigate("/courses")}>View All Courses</Button>
+            <Button onClick={() => navigate("/course-list")}>View All Courses</Button>
           </div>
         </div>
         <Footer />
@@ -181,7 +181,7 @@ const CourseDetail = () => {
         <div className="container mx-auto px-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate("/courses")}
+            onClick={() => navigate("/course-list")}
             className="mb-8"
           >
             ← Back to Courses
