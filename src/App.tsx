@@ -9,6 +9,7 @@ import { CartProvider } from "@/context/CartContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Courses from "./pages/Courses";
 import CourseList from "./pages/CourseList";
 import CourseDetail from "./pages/CourseDetail";
 import Checkout from "./pages/Checkout";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/courses" element={<Courses />} />
               <Route path="/course-list" element={<CourseList />} />
               <Route path="/course/:courseId" element={<CourseDetail />} />
               <Route path="/checkout/:courseId" element={<Checkout />} />

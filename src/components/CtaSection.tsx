@@ -19,7 +19,7 @@ const CtaSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg"
-              onClick={() => navigate("/course-list")}
+              onClick={() => navigate("/courses")}
             >
               Find a Course
             </Button>

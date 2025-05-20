@@ -103,7 +103,7 @@ const FeaturedCourses = () => {
         <div className="text-center mt-10">
           <Button 
             variant="default"
-            onClick={() => navigate("/course-list")}
+            onClick={() => navigate("/courses")}
           >
             Browse All Courses
           </Button>
