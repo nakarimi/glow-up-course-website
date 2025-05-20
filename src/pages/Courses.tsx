@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -152,6 +151,14 @@ const Courses = () => {
               <p className="text-muted-foreground text-lg">
                 Browse our extensive selection of professional training courses
               </p>
+              <div className="mt-8">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate("/course-list")}
+                >
+                  View All Courses
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -542,7 +541,7 @@ const CourseList = () => {
                     <p className="text-muted-foreground">No courses matching your filters.</p>
                   </div>
                 ) : view === "grid" ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {currentCourses.map(course => (
                       <Card 
                         key={course.id} 
