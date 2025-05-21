@@ -23,7 +23,7 @@ const NewsSlider = () => {
   };
 
   return (
-    <div className="w-full py-16 px-4 md:px-8 bg-white dark:bg-slate-900">
+    <div className="w-full py-16 px-8 md:px-12 bg-white dark:bg-slate-900 my-8">
       <div className="container mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Latest News</h2>

@@ -1,7 +1,4 @@
 
-// Update the featured courses component to ensure "View Course" links work correctly
-// Make sure the course detail links are properly formatted
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +47,10 @@ const courses = [
 const FeaturedCourses = () => {
   const navigate = useNavigate();
 
+  const handleViewCourse = (courseId: number) => {
+    navigate(`/course/${courseId}`);
+  };
+
   return (
     <section id="featured-courses" className="py-16 px-4 bg-slate-100/50 dark:bg-slate-900">
       <div className="container mx-auto">
@@ -81,7 +82,7 @@ const FeaturedCourses = () => {
                 <Button 
                   variant="default" 
                   className="w-full"
-                  onClick={() => navigate(`/course/${course.id}`)}
+                  onClick={() => handleViewCourse(course.id)}
                 >
                   View Course
                 </Button>
