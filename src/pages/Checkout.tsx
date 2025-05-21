@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -98,6 +97,7 @@ const Checkout = () => {
   const selectedDate = searchParams.get("date") || "";
   const attendeesCount = parseInt(searchParams.get("attendees") || "1");
   
+  // Find the course by ID if we have a courseId
   const course = courseId ? coursesData.find(c => c.id === Number(courseId)) : null;
   
   const [leadBooker, setLeadBooker] = useState({

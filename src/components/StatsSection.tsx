@@ -1,5 +1,6 @@
 
 import { useEffect, useState, useRef } from "react";
+import { useTheme } from "next-themes";
 
 const stats = [
   { title: "Teachers", value: 20 },
@@ -13,6 +14,7 @@ const StatsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [counts, setCounts] = useState<number[]>(stats.map(() => 0));
+  const { theme } = useTheme();
 
   useEffect(() => {
     const observer = new IntersectionObserver(

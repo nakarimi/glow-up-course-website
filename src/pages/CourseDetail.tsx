@@ -110,6 +110,7 @@ const CourseDetail = () => {
   const [selectedDate, setSelectedDate] = useState<string>(preselectedDate);
   const [attendeesCount, setAttendeesCount] = useState<number>(1);
   
+  // Find the course by ID from our mock data
   const course = coursesData.find(c => c.id === Number(courseId));
   
   useEffect(() => {
@@ -126,7 +127,7 @@ const CourseDetail = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Course not found</h2>
             <p className="mb-6">The course you're looking for doesn't exist or has been removed.</p>
-            <Button onClick={() => navigate("/course-list")}>View All Courses</Button>
+            <Button onClick={() => navigate("/courses")}>View All Courses</Button>
           </div>
         </div>
         <Footer />
