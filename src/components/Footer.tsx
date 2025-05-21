@@ -1,19 +1,25 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const Footer = () => {
+  const { theme } = useTheme();
+  
   return (
     <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="bg-blue-500 rounded-full w-8 h-8 flex items-center justify-center">
+              <div className={`rounded-full w-8 h-8 flex items-center justify-center ${
+                theme === 'dark' ? 'bg-primary' : 'bg-primary'
+              }`}>
                 <div className="bg-white rounded-full w-6 h-6 flex items-center justify-center">
-                  <div className="bg-blue-500 rounded-full w-3 h-3"></div>
+                  <div className={`rounded-full w-3 h-3 ${
+                    theme === 'dark' ? 'bg-primary' : 'bg-primary'
+                  }`}></div>
                 </div>
               </div>
               <span className="text-lg font-bold">CourseHub</span>

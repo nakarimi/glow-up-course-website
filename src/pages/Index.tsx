@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import NewsSlider from "@/components/NewsSlider";
+import TestimonialSection from "@/components/TestimonialSection";
 
 const Index = () => {
   return (
@@ -17,8 +18,9 @@ const Index = () => {
       <HeroSection />
       <CategoryGrid />
       <FeaturedCourses />
-      <NewsSlider />
+      <TestimonialSection />
       <StatsSection />
+      <NewsSlider />
       <CtaSection />
       <Footer />
     </div>

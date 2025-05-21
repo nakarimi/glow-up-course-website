@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -31,6 +31,12 @@ const categories = [
 ];
 
 const CategoryGrid = () => {
+  const navigate = useNavigate();
+  
+  const handleCategoryClick = (categorySlug: string) => {
+    navigate(`/courses?category=${categorySlug}`);
+  };
+  
   return (
     <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
       <div className="container mx-auto px-4">
@@ -43,10 +49,10 @@ const CategoryGrid = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((category) => (
-            <Link 
+            <div 
               key={category.id} 
-              to={`/course-list?category=${category.slug}`} 
-              className="group block"
+              className="group block cursor-pointer"
+              onClick={() => handleCategoryClick(category.slug)}
             >
               <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-md transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-lg h-full flex flex-col">
                 <div className="h-48 overflow-hidden">
@@ -72,13 +78,13 @@ const CategoryGrid = () => {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
         
         <div className="text-center mt-12">
           <Button asChild size="lg">
-            <Link to="/course-list">View All Courses</Link>
+            <Link to="/courses">View All Courses</Link>
           </Button>
         </div>
       </div>

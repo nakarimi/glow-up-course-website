@@ -59,12 +59,12 @@ const StatsSection = () => {
   return (
     <div 
       ref={sectionRef}
-      className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 py-16"
+      className="bg-gradient-to-r from-primary/90 to-primary dark:from-primary/80 dark:to-primary/60 py-16"
     >
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">Book. Train. Learn.</h2>
-          <p className="text-blue-200">Take your skills to the next level with our professional training programs</p>
+          <p className="text-primary-foreground/80">Take your skills to the next level with our professional training programs</p>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
@@ -73,7 +73,7 @@ const StatsSection = () => {
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
                 {counts[index]}
               </div>
-              <div className="text-blue-100 font-medium">{stat.title}</div>
+              <div className="text-primary-foreground/90 font-medium">{stat.title}</div>
             </div>
           ))}
         </div>

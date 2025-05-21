@@ -1,9 +1,10 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const courses = [
   {
@@ -70,10 +71,23 @@ const CourseCard = ({ course, onViewCourse }: { course: typeof courses[0], onVie
 
 const FeaturedCourses = () => {
   const navigate = useNavigate();
-  const [visibleCourses, setVisibleCourses] = useState(courses);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef(null);
 
   const handleViewCourse = (courseId: number) => {
     navigate(`/course/${courseId}`);
+  };
+
+  const handlePrevClick = () => {
+    if (carouselRef.current) {
+      (carouselRef.current as any).scrollPrev();
+    }
+  };
+
+  const handleNextClick = () => {
+    if (carouselRef.current) {
+      (carouselRef.current as any).scrollNext();
+    }
   };
 
   return (
@@ -85,29 +99,24 @@ const FeaturedCourses = () => {
             <p className="text-muted-foreground">Explore our most popular training programs</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={handlePrevClick}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={handleNextClick}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {visibleCourses.map(course => (
-            <CourseCard key={course.id} course={course} onViewCourse={handleViewCourse} />
-          ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <Button 
-            variant="default"
-            onClick={() => navigate("/courses")}
-          >
-            Browse All Courses
-          </Button>
-        </div>
+        <Carousel className="w-full" setApi={(api) => { carouselRef.current = api; }}>
+          <CarouselContent>
+            {courses.map(course => (
+              <CarouselItem key={course.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <CourseCard key={course.id} course={course} onViewCourse={handleViewCourse} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       </div>
     </section>
   );
