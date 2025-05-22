@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { GlassCard, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
@@ -52,43 +52,75 @@ const FeaturedCourses = () => {
   };
 
   return (
-    <section id="featured-courses" className="py-16 px-4 bg-slate-100/50 dark:bg-slate-900">
+    <section id="featured-courses" className="py-16 px-4 bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-bold">Featured Courses</h2>
+          <h2 className="text-3xl font-bold relative after:content-[''] after:block after:w-1/3 after:h-1 after:bg-primary after:rounded-full after:mt-2">
+            Featured Courses
+          </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.map((course) => (
-            <Card key={course.id} className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video overflow-hidden">
+          {courses.map((course, index) => (
+            <GlassCard 
+              key={course.id} 
+              className="h-full flex flex-col overflow-hidden hover:scale-[1.03] transition-all duration-300 group"
+              style={{ 
+                animationDelay: `${index * 100}ms`,
+                transform: `translateY(${index % 2 === 0 ? '5px' : '-5px'})`
+              }}
+            >
+              <div className="aspect-video overflow-hidden rounded-t-xl relative">
                 <img
                   src={course.image}
                   alt={course.title}
-                  className="w-full h-full object-cover transition-transform hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <Badge variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/10">
+                    {course.category}
+                  </Badge>
+                </div>
               </div>
               <CardContent className="pt-6 flex-1">
-                <Badge variant="outline" className="mb-2">
-                  {course.category}
-                </Badge>
-                <h3 className="text-xl font-bold mb-2">{course.title}</h3>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{course.title}</h3>
                 <div className="flex flex-col gap-1 text-sm text-muted-foreground mb-4">
-                  <div>Location: {course.location}</div>
-                  <div>Duration: {course.duration}</div>
-                  <div className="font-bold text-foreground">${course.price}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="w-2 h-2 rounded-full bg-primary"></span>
+                    </span>
+                    Location: {course.location}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="w-2 h-2 rounded-full bg-primary"></span>
+                    </span>
+                    Duration: {course.duration}
+                  </div>
+                  <div className="font-bold text-foreground text-lg mt-2">${course.price}</div>
                 </div>
               </CardContent>
               <CardFooter className="pt-0">
                 <Button 
                   variant="default" 
-                  className="w-full"
+                  className="w-full rounded-md relative overflow-hidden group-hover:shadow-lg transition-all"
                   onClick={() => handleViewCourse(course.id)}
                 >
-                  View Course
+                  <span className="relative z-10">View Course</span>
+                  <span className="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
                 </Button>
               </CardFooter>
-            </Card>
+            </GlassCard>
           ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            onClick={() => navigate('/courses')}
+          >
+            View All Courses
+          </Button>
         </div>
       </div>
     </section>

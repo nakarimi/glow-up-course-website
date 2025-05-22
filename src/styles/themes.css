@@ -21,6 +21,11 @@
   
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
+  
+  /* Add glass effect variables */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: rgba(0, 0, 0, 0.05);
 }
 
 .dark {
@@ -38,6 +43,11 @@
   
   --background: 224 71% 4%;
   --foreground: 210 40% 98%;
+  
+  /* Dark mode glass effect variables */
+  --glass-bg: rgba(30, 30, 40, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.2);
 }
 
 /* Green Theme */
@@ -183,4 +193,33 @@
   
   --accent: 270 25% 15%;
   --accent-foreground: 270 0% 100%;
+}
+
+/* Rose Theme - New Theme */
+[data-color-theme="rose"] {
+  --primary: 346 77% 60%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 346 80% 96%;
+  --secondary-foreground: 346 77% 40%;
+  
+  --muted: 346 80% 96%;
+  --muted-foreground: 346 40% 50%;
+  
+  --accent: 346 80% 96%;
+  --accent-foreground: 346 77% 40%;
+}
+
+[data-color-theme="rose"].dark {
+  --primary: 346 77% 60%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 346 25% 15%;
+  --secondary-foreground: 346 0% 100%;
+  
+  --muted: 346 25% 15%;
+  --muted-foreground: 346 50% 75%;
+  
+  --accent: 346 25% 15%;
+  --accent-foreground: 346 0% 100%;
 }

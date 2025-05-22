@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -9,7 +10,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-md animate-fade-in",
       className
     )}
     {...props}
@@ -76,4 +77,20 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+// Add glass card variant
+const GlassCard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-xl backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border border-white/20 dark:border-white/10 shadow-lg text-card-foreground transition-all duration-300 hover:shadow-xl animate-fade-in",
+      className
+    )}
+    {...props}
+  />
+))
+GlassCard.displayName = "GlassCard"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, GlassCard }
