@@ -1,15 +1,44 @@
 
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { newsData } from "@/data/news";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BlogPost, getBlogPostBySlug, getBlogPostsByCategory, fetchWithDelay } from "@/services/dataService";
 
 const NewsDetail = () => {
-  const { slug } = useParams();
-  const news = newsData.find(item => item.slug === slug);
+  const { slug } = useParams<{ slug: string }>();
+  const [news, setNews] = useState<BlogPost | null>(null);
+  const [relatedNews, setRelatedNews] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const loadNewsDetail = async () => {
+      setLoading(true);
+      try {
+        if (slug) {
+          const newsItem = await fetchWithDelay(getBlogPostBySlug(slug));
+          setNews(newsItem || null);
+          
+          if (newsItem) {
+            // Get related news
+            const related = await fetchWithDelay(getBlogPostsByCategory(newsItem.category));
+            // Filter out current article and limit to 3 items
+            setRelatedNews(related.filter(item => item.slug !== slug).slice(0, 3));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching news detail:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadNewsDetail();
+  }, [slug]);
   
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -18,13 +47,32 @@ const NewsDetail = () => {
       day: 'numeric'
     });
   };
-  
-  // Find related news (same category, excluding current)
-  const relatedNews = news 
-    ? newsData
-        .filter(item => item.category === news.category && item.id !== news.id)
-        .slice(0, 3) 
-    : [];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-6 w-24 mb-4" />
+            <Skeleton className="h-10 w-3/4 mb-4" />
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-6 w-24" />
+            </div>
+            <Skeleton className="h-80 w-full mb-8 rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!news) {
     return (

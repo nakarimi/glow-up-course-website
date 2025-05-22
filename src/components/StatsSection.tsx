@@ -1,86 +1,109 @@
 
-import { useEffect, useState, useRef } from "react";
-import { useTheme } from "next-themes";
-
-const stats = [
-  { title: "Teachers", value: 20 },
-  { title: "Rooms", value: 12 },
-  { title: "Courses", value: 60 },
-  { title: "Subjects", value: 16 },
-  { title: "Years", value: 30 },
-];
+import { useState, useEffect } from "react";
+import CountUp from "react-countup";
+import { AlertCircle, Award, BookOpen, MapPin, ThumbsUp, Users } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Stat, getAllStats, fetchWithDelay } from "@/services/dataService";
 
 const StatsSection = () => {
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [counts, setCounts] = useState<number[]>(stats.map(() => 0));
-  const { theme } = useTheme();
+
+  useEffect(() => {
+    const loadStats = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchWithDelay(getAllStats());
+        setStats(data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.unobserve(entry.target);
+          observer.disconnect();
         }
       },
       { threshold: 0.1 }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    const element = document.getElementById("stats-section");
+    if (element) {
+      observer.observe(element);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (element) {
+        observer.unobserve(element);
       }
     };
   }, []);
 
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const intervals = stats.map((stat, index) => {
-      return setInterval(() => {
-        setCounts(prevCounts => 
-          prevCounts.map((count, i) => {
-            if (i !== index) return count;
-            const nextCount = count + 1;
-            return nextCount >= stat.value ? stat.value : nextCount;
-          })
-        );
-      }, 1500 / stat.value);
-    });
-
-    return () => {
-      intervals.forEach(interval => clearInterval(interval));
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, JSX.Element> = {
+      BookOpen: <BookOpen className="h-8 w-8" />,
+      Award: <Award className="h-8 w-8" />,
+      MapPin: <MapPin className="h-8 w-8" />,
+      ThumbsUp: <ThumbsUp className="h-8 w-8" />,
+      Users: <Users className="h-8 w-8" />,
     };
-  }, [isVisible]);
+
+    return iconMap[iconName] || <AlertCircle className="h-8 w-8" />;
+  };
 
   return (
-    <div 
-      ref={sectionRef}
-      className="bg-gradient-to-r from-primary/90 to-primary dark:from-primary/80 dark:to-primary/60 py-16"
-    >
+    <section id="stats-section" className="py-16 bg-slate-50 dark:bg-slate-900/50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">Book. Train. Learn.</h2>
-          <p className="text-primary-foreground/80">Take your skills to the next level with our professional training programs</p>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-2 text-gradient">Our Impact</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            The numbers speak for themselves
+          </p>
         </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-          {stats.map((stat, index) => (
-            <div key={stat.title} className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                {counts[index]}
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="text-center">
+                <Skeleton className="h-10 w-10 mx-auto mb-4 rounded-full" />
+                <Skeleton className="h-8 w-1/3 mx-auto mb-2" />
+                <Skeleton className="h-4 w-1/2 mx-auto" />
               </div>
-              <div className="text-primary-foreground/90 font-medium">{stat.title}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-full mb-4">
+                  {getIconComponent(stat.icon)}
+                </div>
+                <div className="text-3xl md:text-4xl font-bold mb-1">
+                  {isVisible && (
+                    <CountUp 
+                      end={stat.value} 
+                      duration={2.5}
+                      suffix={stat.suffix} 
+                    />
+                  )}
+                </div>
+                <p className="text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 

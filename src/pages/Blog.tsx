@@ -5,109 +5,33 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  date: string;
-  image: string;
-  readTime: string;
-  category: string;
-  tags: string[];
-}
-
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: "Top 10 Health and Safety Training Courses for 2025",
-    excerpt: "Discover the most in-demand health and safety training courses that every professional should consider in 2025.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "Sarah Johnson",
-    date: "May 15, 2025",
-    image: "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "8 min read",
-    category: "Health & Safety",
-    tags: ["training", "health", "safety", "professional development"]
-  },
-  {
-    id: 2,
-    title: "The Evolution of Professional Training in the Digital Age",
-    excerpt: "How digital technology has transformed the landscape of professional training and development over the past decade.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "Michael Chen",
-    date: "April 28, 2025",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "5 min read",
-    category: "Technology",
-    tags: ["digital learning", "technology", "innovation"]
-  },
-  {
-    id: 3,
-    title: "Why Continuous Professional Development Matters More Than Ever",
-    excerpt: "In a rapidly changing job market, continuous learning has become essential for career growth and job security.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "Emily Roberts",
-    date: "April 10, 2025",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "6 min read",
-    category: "Career Development",
-    tags: ["CPD", "career growth", "professional skills"]
-  },
-  {
-    id: 4,
-    title: "Implementing Effective Training Programs in the Workplace",
-    excerpt: "A step-by-step guide to designing and implementing training programs that deliver measurable results.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "David Wilson",
-    date: "March 22, 2025",
-    image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "10 min read",
-    category: "Workplace",
-    tags: ["training programs", "workplace", "implementation"]
-  },
-  {
-    id: 5,
-    title: "The Future of VR in Training and Education",
-    excerpt: "Virtual reality is revolutionizing how we learn and train, offering immersive experiences that enhance retention.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "Alicia Nguyen",
-    date: "March 5, 2025",
-    image: "https://images.unsplash.com/photo-1593508512255-86ab42a8e520?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "7 min read",
-    category: "Technology",
-    tags: ["VR", "virtual reality", "immersive learning"]
-  },
-  {
-    id: 6,
-    title: "Certification vs. Experience: What Employers Value Most",
-    excerpt: "Exploring the balance between professional certifications and practical experience in today's job market.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    author: "James Peterson",
-    date: "February 18, 2025",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    readTime: "9 min read",
-    category: "Career Development",
-    tags: ["certification", "experience", "hiring"]
-  }
-];
-
-const categories = [
-  "All",
-  "Health & Safety",
-  "Technology",
-  "Career Development",
-  "Workplace",
-  "Leadership"
-];
+import { BlogPost, getAllBlogPosts, fetchWithDelay } from "@/services/dataService";
 
 const Blog = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const loadBlogPosts = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchWithDelay(getAllBlogPosts());
+        setBlogPosts(data);
+        setFilteredPosts(data);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBlogPosts();
+  }, []);
   
   useEffect(() => {
     // Apply staggered animation when component mounts
@@ -123,7 +47,10 @@ const Blog = () => {
     } else {
       setFilteredPosts(blogPosts.filter(post => post.category === selectedCategory));
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, blogPosts]);
+
+  // Extract unique categories
+  const categories = ["All", ...Array.from(new Set(blogPosts.map(post => post.category)))];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -151,75 +78,123 @@ const Blog = () => {
             </motion.p>
             
             {/* Category Filter */}
-            <div className="flex flex-wrap justify-center gap-2 mb-12">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                  className="transition-all duration-300"
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
+            {loading ? (
+              <div className="flex flex-wrap justify-center gap-2 mb-12">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Skeleton key={i} className="h-9 w-24" />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-2 mb-12">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                    className="transition-all duration-300"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </section>
         
         {/* Masonry Blog Grid */}
         <section className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
-            {filteredPosts.map((post, index) => (
-              <div 
-                key={post.id}
-                className={`blog-card opacity-0 glass-card overflow-hidden transition-all hover:shadow-xl ${
-                  index % 3 === 0 ? 'lg:col-span-1 row-span-1' : 
-                  index % 5 === 0 ? 'lg:col-span-2 row-span-1' : 'col-span-1'
-                }`}
-              >
-                <div className="relative">
-                  <img 
-                    src={post.image} 
-                    alt={post.title} 
-                    className="w-full h-48 lg:h-56 object-cover transition-transform duration-500 hover:scale-105"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-primary/90 hover:bg-primary">{post.category}</Badge>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between text-xs text-muted-foreground mb-2">
-                    <span>{post.date}</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 line-clamp-2">{post.title}</h3>
-                  <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        {post.author.charAt(0)}
-                      </div>
-                      <span className="text-sm">{post.author}</span>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div 
+                  key={i}
+                  className={`glass-card overflow-hidden ${
+                    i % 3 === 0 ? 'lg:col-span-1 row-span-1' : 
+                    i % 5 === 0 ? 'lg:col-span-2 row-span-1' : 'col-span-1'
+                  }`}
+                >
+                  <Skeleton className="h-48 lg:h-56 w-full" />
+                  <div className="p-6">
+                    <div className="flex justify-between mb-2">
+                      <Skeleton className="h-3 w-20" />
+                      <Skeleton className="h-3 w-16" />
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => navigate(`/blog/${post.id}`)}
-                    >
-                      Read more
-                    </Button>
+                    <Skeleton className="h-7 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-full mb-4" />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Skeleton className="w-8 h-8 rounded-full" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                      <Skeleton className="h-9 w-24" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
+              {filteredPosts.map((post, index) => (
+                <div 
+                  key={post.id}
+                  className={`blog-card opacity-0 glass-card overflow-hidden transition-all hover:shadow-xl ${
+                    index % 3 === 0 ? 'lg:col-span-1 row-span-1' : 
+                    index % 5 === 0 ? 'lg:col-span-2 row-span-1' : 'col-span-1'
+                  }`}
+                >
+                  <div className="relative">
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-48 lg:h-56 object-cover transition-transform duration-500 hover:scale-105"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-primary/90 hover:bg-primary">{post.category}</Badge>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex justify-between text-xs text-muted-foreground mb-2">
+                      <span>{formatDate(post.date)}</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 line-clamp-2">{post.title}</h3>
+                    <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          {post.author.charAt(0)}
+                        </div>
+                        <span className="text-sm">{post.author}</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => navigate(`/news/${post.slug}`)}
+                      >
+                        Read more
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </main>
       
       <Footer />
     </div>
   );
+};
+
+// Helper function to format date string
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 };
 
 export default Blog;

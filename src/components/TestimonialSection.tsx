@@ -1,104 +1,87 @@
 
+import { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import { useRef } from "react";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    position: "Marketing Director",
-    company: "TechGlobal Inc.",
-    content: "The courses at CourseHub transformed my understanding of digital marketing. The instructors are knowledgeable and provide real-world examples that I've been able to implement immediately in my work.",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80"
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    position: "Software Engineer",
-    company: "InnovateTech",
-    content: "I completed the Web Development course and was impressed by the curriculum's depth and how up-to-date it was with current industry practices. Within weeks of completing the course, I received three job offers.",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80"
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    position: "HR Manager",
-    company: "Global Services Ltd.",
-    content: "The Management Training course provided valuable insights into effective leadership strategies. The skills I gained have helped me build stronger teams and improve workplace communication significantly.",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80"
-  },
-  {
-    id: 4,
-    name: "David Thompson",
-    position: "Financial Analyst",
-    company: "Capital Investments",
-    content: "As someone transitioning into data analysis, the Data Analysis course gave me the perfect foundation. The practical exercises were challenging yet accessible, and the support from instructors was exceptional.",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80"
-  },
-  {
-    id: 5,
-    name: "Sophia Lee",
-    position: "Project Manager",
-    company: "BuildRight Construction",
-    content: "The project management certification from CourseHub has been instrumental in advancing my career. The course content was comprehensive and directly applicable to my daily work challenges.",
-    avatar: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80"
-  }
-];
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Quote } from "lucide-react";
+import { Testimonial, getAllTestimonials, fetchWithDelay } from "@/services/dataService";
 
 const TestimonialSection = () => {
-  const carouselRef = useRef(null);
-  
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTestimonials = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchWithDelay(getAllTestimonials());
+        setTestimonials(data);
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTestimonials();
+  }, []);
+
   return (
-    <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
+    <section className="py-16 bg-gradient-to-br from-primary/5 to-transparent">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">What Our Students Say</h2>
+          <h2 className="text-3xl font-bold mb-2 text-gradient">What Our Students Say</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Discover how our courses have helped professionals achieve their career goals
+            Discover how our courses have helped professionals advance their careers
           </p>
         </div>
-        
-        <div className="relative">
-          <Carousel
-            setApi={(api) => { carouselRef.current = api; }}
-            opts={{ loop: true }}
-            className="w-full"
+
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="w-full max-w-3xl">
+              <Skeleton className="h-48 w-full rounded-lg" />
+            </div>
+          </div>
+        ) : (
+          <Carousel 
+            opts={{ align: "center", loop: true }}
+            className="w-full max-w-5xl mx-auto"
           >
             <CarouselContent>
-              {testimonials.map((testimonial) => (
-                <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                  <Card className="border bg-card h-full">
-                    <CardContent className="pt-6 px-6 pb-6 flex flex-col h-full">
-                      <div className="mb-4 flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full overflow-hidden">
+              {testimonials.map((item) => (
+                <CarouselItem key={item.id} className="sm:basis-full md:basis-2/3 lg:basis-1/2 pl-4">
+                  <div className="p-1 h-full">
+                    <Card className="glass-card relative p-6 md:p-8 h-full flex flex-col">
+                      <div className="absolute top-4 right-4 text-primary/30">
+                        <Quote size={40} className="rotate-180" />
+                      </div>
+                      <blockquote className="text-lg mb-6 relative z-10">
+                        "{item.quote}"
+                      </blockquote>
+                      <div className="flex items-center mt-auto">
+                        <div className="h-12 w-12 rounded-full overflow-hidden mr-4">
                           <img 
-                            src={testimonial.avatar} 
-                            alt={testimonial.name} 
+                            src={item.image} 
+                            alt={item.name} 
                             className="h-full w-full object-cover"
                           />
                         </div>
                         <div>
-                          <p className="font-semibold">{testimonial.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {testimonial.position}, {testimonial.company}
-                          </p>
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="text-sm text-muted-foreground">{item.title}, {item.company}</p>
                         </div>
                       </div>
-                      <blockquote className="text-muted-foreground flex-grow">
-                        "{testimonial.content}"
-                      </blockquote>
-                    </CardContent>
-                  </Card>
+                    </Card>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="hidden md:flex justify-end gap-2 mt-6">
-              <CarouselPrevious onClick={() => (carouselRef.current as any)?.scrollPrev()} className="static translate-y-0" />
-              <CarouselNext onClick={() => (carouselRef.current as any)?.scrollNext()} className="static translate-y-0" />
+            <div className="hidden sm:flex justify-end gap-2 mt-4">
+              <CarouselPrevious />
+              <CarouselNext />
             </div>
           </Carousel>
-        </div>
+        )}
       </div>
     </section>
   );
