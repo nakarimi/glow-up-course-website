@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useContext } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -128,6 +129,7 @@ const Checkout = () => {
   useEffect(() => {
     if (courseId && course) {
       const count = attendeesCount;
+      // Create initial delegates array based on count
       const initialDelegates = Array(count).fill(0).map((_, index) => ({
         id: index + 1,
         firstName: "",
@@ -135,6 +137,8 @@ const Checkout = () => {
         email: "",
         phone: "",
         jobTitle: "",
+        // Add courseId for direct enrollment
+        courseId: Number(courseId)
       }));
       setDelegatesData(initialDelegates);
     } else if (cartItems.length > 0) {
@@ -274,10 +278,10 @@ const Checkout = () => {
                   </div>
                   <span className="text-xs text-muted-foreground">Details</span>
                 </div>
-                <div className="h-1 flex-1 bg-blue-500"></div>
+                <div className="h-1 flex-1 bg-primary"></div>
                 <div className="flex-1 flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mb-2">
-                    <span className="text-white">4</span>
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mb-2">
+                    <span className="text-primary-foreground">4</span>
                   </div>
                   <span className="text-xs font-medium">Checkout</span>
                 </div>
@@ -297,7 +301,7 @@ const Checkout = () => {
             <div className="lg:col-span-2 space-y-6">
               {/* Lead Booker Details */}
               <Card>
-                <CardHeader className="bg-blue-600 text-white py-3 px-6">
+                <CardHeader className="bg-primary text-primary-foreground py-3 px-6">
                   <CardTitle className="flex items-center text-lg">
                     <User className="h-5 w-5 mr-2" />
                     Lead booker details
@@ -403,7 +407,7 @@ const Checkout = () => {
               
               {/* Delegate Details */}
               <Card>
-                <CardHeader className="bg-blue-600 text-white py-3 px-6">
+                <CardHeader className="bg-primary text-primary-foreground py-3 px-6">
                   <CardTitle className="flex items-center text-lg">
                     <User className="h-5 w-5 mr-2" />
                     Delegate details
@@ -496,7 +500,7 @@ const Checkout = () => {
               
               {/* Payment Method */}
               <Card>
-                <CardHeader className="bg-blue-600 text-white py-3 px-6">
+                <CardHeader className="bg-primary text-primary-foreground py-3 px-6">
                   <CardTitle className="flex items-center text-lg">
                     <CreditCard className="h-5 w-5 mr-2" />
                     Pay with
@@ -543,7 +547,7 @@ const Checkout = () => {
               
               {/* Billing Address */}
               <Card>
-                <CardHeader className="bg-blue-600 text-white py-3 px-6">
+                <CardHeader className="bg-primary text-primary-foreground py-3 px-6">
                   <CardTitle className="flex items-center text-lg">
                     <MapPin className="h-5 w-5 mr-2" />
                     Billing address
@@ -647,7 +651,7 @@ const Checkout = () => {
                   required
                 />
                 <label htmlFor="terms" className="text-sm">
-                  I accept the <span className="text-blue-600 hover:underline cursor-pointer">Terms and Conditions</span>
+                  I accept the <span className="text-primary hover:underline cursor-pointer">Terms and Conditions</span>
                 </label>
               </div>
               

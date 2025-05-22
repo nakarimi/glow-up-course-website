@@ -155,3 +155,32 @@
   --accent: 200 25% 15%;
   --accent-foreground: 198.6 0% 100%;
 }
+
+/* Purple Theme */
+[data-color-theme="purple"] {
+  --primary: 270 95% 65%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 270 80% 96%;
+  --secondary-foreground: 270 95% 40%;
+  
+  --muted: 270 80% 96%;
+  --muted-foreground: 270 40% 50%;
+  
+  --accent: 270 80% 96%;
+  --accent-foreground: 270 95% 40%;
+}
+
+[data-color-theme="purple"].dark {
+  --primary: 270 95% 65%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 270 25% 15%;
+  --secondary-foreground: 270 0% 100%;
+  
+  --muted: 270 25% 15%;
+  --muted-foreground: 270 50% 75%;
+  
+  --accent: 270 25% 15%;
+  --accent-foreground: 270 0% 100%;
+}

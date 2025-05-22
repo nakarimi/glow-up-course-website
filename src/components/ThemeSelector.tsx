@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
 
-type ColorTheme = "blue" | "green" | "yellow" | "orange" | "sky";
+type ColorTheme = "blue" | "green" | "yellow" | "orange" | "sky" | "purple";
 
 const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();
@@ -47,6 +47,7 @@ const ThemeSelector = () => {
               yellow: "bg-yellow-500",
               orange: "bg-orange-500",
               sky: "bg-sky-500",
+              purple: "bg-purple-500",
             }[colorTheme]
           }`}></span>
         </Button>
@@ -92,6 +93,10 @@ const ThemeSelector = () => {
           <DropdownMenuRadioItem value="sky" className="flex items-center">
             <span className="h-4 w-4 rounded-full bg-sky-500 mr-2"></span>
             Sky Blue
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="purple" className="flex items-center">
+            <span className="h-4 w-4 rounded-full bg-purple-500 mr-2"></span>
+            Purple
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
