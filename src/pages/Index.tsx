@@ -1,4 +1,5 @@
 
+import { useEffect, useState } from "react";
 import HomeSlider from "@/components/HomeSlider";
 import FeaturedCourses from "@/components/FeaturedCourses";
 import CategoryGrid from "@/components/CategoryGrid";
@@ -10,9 +11,33 @@ import HeroSection from "@/components/HeroSection";
 import NewsSlider from "@/components/NewsSlider";
 import TestimonialSection from "@/components/TestimonialSection";
 import CourseCategories from "@/components/CourseCategories";
-import { useEffect } from "react";
+
+// Add ReCAPTCHA script
+const loadReCaptcha = () => {
+  const script = document.createElement("script");
+  script.src = "https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+  
+  return () => {
+    document.head.removeChild(script);
+  };
+};
 
 const Index = () => {
+  const [isRecaptchaLoaded, setIsRecaptchaLoaded] = useState(false);
+
+  // Load ReCAPTCHA
+  useEffect(() => {
+    const cleanupRecaptcha = loadReCaptcha();
+    setIsRecaptchaLoaded(true);
+    
+    return () => {
+      cleanupRecaptcha();
+    };
+  }, []);
+  
   // Add smooth scroll behavior on component mount
   useEffect(() => {
     // Scroll to top when the component mounts
@@ -61,6 +86,20 @@ const Index = () => {
       <NewsSlider />
       <CtaSection />
       <Footer />
+
+      {/* Hidden reCAPTCHA badge for test purposes */}
+      {isRecaptchaLoaded && (
+        <div 
+          className="g-recaptcha" 
+          data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+          data-size="invisible"
+        ></div>
+      )}
+      
+      {/* Add a visual indicator that reCAPTCHA is loaded */}
+      <div className="fixed bottom-2 left-2 z-10 text-xs bg-white/80 dark:bg-gray-800/80 p-1 px-2 rounded-full text-muted-foreground">
+        {isRecaptchaLoaded ? "reCAPTCHA loaded" : "Loading reCAPTCHA..."}
+      </div>
     </div>
   );
 };

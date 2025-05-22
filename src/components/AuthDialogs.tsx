@@ -12,9 +12,10 @@ interface AuthDialogsProps {
   variant: "login" | "signup";
   triggerClassName?: string;
   children?: React.ReactNode;
+  onSuccess?: () => void;
 }
 
-const AuthDialogs = ({ variant, triggerClassName, children }: AuthDialogsProps) => {
+const AuthDialogs = ({ variant, triggerClassName, children, onSuccess }: AuthDialogsProps) => {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"login" | "signup">(variant);
@@ -81,6 +82,10 @@ const AuthDialogs = ({ variant, triggerClassName, children }: AuthDialogsProps) 
         ? "Welcome back to our platform." 
         : "Your account has been successfully created.",
     });
+    
+    if (onSuccess) {
+      onSuccess();
+    }
     
     setOpen(false);
     setStep(1);

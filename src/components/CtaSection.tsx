@@ -18,9 +18,10 @@ const CtaSection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="glass-card max-w-3xl mx-auto text-center p-10 backdrop-blur-lg animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gradient">
-            Ready to enhance your skills?
-          </h2>
+          <div className="text-3xl md:text-4xl font-bold mb-6 flex flex-col items-center space-y-1">
+            <div className="text-gradient">Ready to enhance your skills?</div>
+            <div className="text-lg font-medium text-gradient">BOOK | TRAIN | LEARN</div>
+          </div>
           <p className="text-muted-foreground mb-10 text-lg">
             Join thousands of professionals who have transformed their careers with our courses.
             Get started today and take the first step toward your professional goals.

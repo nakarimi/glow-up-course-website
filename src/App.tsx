@@ -18,6 +18,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
+import Blog from "./pages/Blog";
+import Branches from "./pages/Branches";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,8 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/news" element={<News />} />
               <Route path="/news/:slug" element={<NewsDetail />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/branches" element={<Branches />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

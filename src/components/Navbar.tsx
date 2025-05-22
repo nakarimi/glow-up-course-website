@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Sheet, 
@@ -12,12 +12,12 @@ import {
   SheetTitle, 
   SheetClose 
 } from "@/components/ui/sheet";
-import AuthDialogs from "@/components/AuthDialogs";
 import ThemeToggle from "@/components/ThemeToggle";
 import { CartContext } from "@/context/CartContext";
 import { useContext } from "react";
 import ThemeSelector from "@/components/ThemeSelector";
 import { useIsMobile } from "@/hooks/use-mobile";
+import UserMenu from "@/components/UserMenu";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -41,8 +41,9 @@ const Navbar = () => {
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Courses", path: "/course-list" },
+    { label: "Blog", path: "/blog" },
+    { label: "Branches", path: "/branches" },
     { label: "About", path: "/about" },
-    { label: "News", path: "/news" },
     { label: "Contact", path: "/contact" },
   ];
   
@@ -93,11 +94,8 @@ const Navbar = () => {
               </Button>
             </Link>
             
-            {/* Auth buttons */}
-            <div className="hidden md:flex space-x-2">
-              <AuthDialogs variant="login" />
-              <AuthDialogs variant="signup" />
-            </div>
+            {/* User Menu replacing Auth buttons */}
+            <UserMenu />
             
             {/* Mobile menu button */}
             {isMobile && (
@@ -126,8 +124,7 @@ const Navbar = () => {
                       </SheetClose>
                     ))}
                     <div className="pt-4 border-t flex flex-col space-y-2">
-                      <AuthDialogs variant="login" triggerClassName="w-full justify-center" />
-                      <AuthDialogs variant="signup" triggerClassName="w-full justify-center" />
+                      <UserMenu className="justify-start w-full h-auto p-2" />
                     </div>
                   </div>
                 </SheetContent>
