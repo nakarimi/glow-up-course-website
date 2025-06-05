@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +23,10 @@ const Footer = () => {
                   }`}></div>
                 </div>
               </div>
-              <span className="text-lg font-bold">CourseHub</span>
+              <span className="text-lg font-bold">SkillForge</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-6">
-              Providing high-quality training courses to help professionals advance their careers since 1993.
+              Forging professional excellence through expert-led training and certification programs since 2010.
             </p>
             <div className="flex gap-4">
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -54,11 +55,11 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-4">Contact Details</h3>
             <address className="not-italic text-muted-foreground">
-              <p className="mb-2">CourseHub Training</p>
-              <p className="mb-2">123 Training Street</p>
-              <p className="mb-2">Education City, EC1 2AB</p>
-              <p className="mb-2">Phone: +44 1234 567890</p>
-              <p>Email: info@coursehub.com</p>
+              <p className="mb-2">SkillForge Academy</p>
+              <p className="mb-2">456 Innovation Drive</p>
+              <p className="mb-2">Tech Quarter, TQ3 4SF</p>
+              <p className="mb-2">Phone: +44 20 7123 4567</p>
+              <p>Email: hello@skillforge.academy</p>
             </address>
           </div>
 
@@ -76,7 +77,7 @@ const Footer = () => {
 
         <div className="border-t border-slate-200 dark:border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} CourseHub Training. All rights reserved.
+            &copy; {new Date().getFullYear()} SkillForge Academy. All rights reserved.
           </p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">

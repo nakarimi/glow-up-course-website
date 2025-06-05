@@ -59,7 +59,7 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-primary mr-8">
-              TrainHub
+              SkillForge
             </Link>
             
             {/* Desktop navigation */}
@@ -108,7 +108,7 @@ const Navbar = () => {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <SheetHeader>
                     <SheetTitle className="text-left text-2xl font-bold">
-                      TrainHub
+                      SkillForge
                     </SheetTitle>
                   </SheetHeader>
                   <div className="mt-6 flex flex-col space-y-4">
