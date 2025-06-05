@@ -19,81 +19,65 @@ const locations = [
   "Sheffield"
 ];
 
-const subjectsByLocation = {
+const categoriesByLocation = {
   "Online": [
-    "Web Development",
-    "Data Analysis",
-    "Digital Marketing",
-    "Leadership Skills",
-    "Project Management",
-    "UX Design",
-    "Business Analytics",
-    "Python Programming",
-    "Content Writing"
+    "Technology",
+    "Business",
+    "Marketing",
+    "Design",
+    "Finance"
   ],
   "London": [
-    "Web Development",
-    "Management Training",
-    "Digital Marketing",
-    "Financial Analysis",
-    "Business Strategy",
-    "UI/UX Design"
+    "Technology",
+    "Business",
+    "Marketing",
+    "Finance"
   ],
   "Manchester": [
-    "Digital Marketing",
-    "Web Development",
-    "Leadership Skills",
-    "Sales Techniques",
-    "Customer Service"
+    "Marketing",
+    "Technology",
+    "Business"
   ],
   "Birmingham": [
-    "Project Management",
-    "Business Analytics",
-    "Leadership Skills",
-    "Data Science",
-    "Marketing Strategy"
+    "Business",
+    "Technology",
+    "Marketing"
   ],
   "Leeds": [
-    "Digital Marketing",
-    "Content Creation",
-    "SEO Optimization",
-    "Business Management"
+    "Marketing",
+    "Business"
   ],
   "Glasgow": [
-    "Financial Planning",
-    "Data Analysis",
-    "Project Management",
-    "Business Strategy"
+    "Finance",
+    "Technology",
+    "Business"
   ],
   "Edinburgh": [
-    "Data Analysis",
-    "Digital Marketing",
-    "Leadership Skills",
-    "Business Strategy"
+    "Technology",
+    "Marketing",
+    "Business"
   ],
   "Liverpool": [
-    "Web Development",
-    "Digital Marketing",
-    "Business Management",
-    "Marketing Strategy"
+    "Technology",
+    "Marketing",
+    "Business"
   ],
   "Bristol": [
-    "UX Design",
-    "Web Development",
-    "Digital Marketing",
-    "Leadership Skills"
+    "Design",
+    "Technology",
+    "Marketing",
+    "Business"
   ],
   "Sheffield": [
-    "Project Management",
-    "Data Analysis",
-    "Business Strategy",
-    "Marketing Strategy"
+    "Business",
+    "Technology",
+    "Marketing"
   ]
 };
 
-const allSubjects = Array.from(
+const allCategories = Array.from(
   new Set(
-    Object.values(subjectsByLocation).flatMap(subjects => subjects)
+    Object.values(categoriesByLocation).flatMap(categories => categories)
   )
 ).sort();
 
@@ -101,13 +85,13 @@ const HeroSection = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [location, setLocation] = useState("");
-  const [subject, setSubject] = useState("");
+  const [category, setCategory] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-  const [subjectSuggestions, setSubjectSuggestions] = useState<string[]>([]);
+  const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
   const [showLocationPopover, setShowLocationPopover] = useState(false);
-  const [showSubjectPopover, setShowSubjectPopover] = useState(false);
+  const [showCategoryPopover, setShowCategoryPopover] = useState(false);
   const locationInputRef = useRef<HTMLInputElement>(null);
-  const subjectInputRef = useRef<HTMLInputElement>(null);
+  const categoryInputRef = useRef<HTMLInputElement>(null);
 
   // Filter location suggestions based on input
   useEffect(() => {
@@ -121,21 +105,21 @@ const HeroSection = () => {
     }
   }, [location]);
 
-  // Filter subject suggestions based on selected location and input
+  // Filter category suggestions based on selected location and input
   useEffect(() => {
-    if (subject) {
-      let availableSubjects = location 
-        ? (subjectsByLocation as Record<string, string[]>)[location] || allSubjects
-        : allSubjects;
+    if (category) {
+      let availableCategories = location 
+        ? (categoriesByLocation as Record<string, string[]>)[location] || allCategories
+        : allCategories;
         
-      const filtered = availableSubjects.filter(sub => 
-        sub.toLowerCase().includes(subject.toLowerCase())
+      const filtered = availableCategories.filter(cat => 
+        cat.toLowerCase().includes(category.toLowerCase())
       );
-      setSubjectSuggestions(filtered);
+      setCategorySuggestions(filtered);
     } else {
-      setSubjectSuggestions([]);
+      setCategorySuggestions([]);
     }
-  }, [subject, location]);
+  }, [category, location]);
 
   const handleLocationSelect = (loc: string) => {
     setLocation(loc);
@@ -143,20 +127,20 @@ const HeroSection = () => {
     // Auto-advance to next step
     setCurrentStep(2);
     setTimeout(() => {
-      subjectInputRef.current?.focus();
+      categoryInputRef.current?.focus();
     }, 100);
   };
 
-  const handleSubjectSelect = (sub: string) => {
-    setSubject(sub);
-    setShowSubjectPopover(false);
+  const handleCategorySelect = (cat: string) => {
+    setCategory(cat);
+    setShowCategoryPopover(false);
   };
 
   const handleNextStep = () => {
     if (currentStep === 1 && location) {
       setCurrentStep(2);
       setTimeout(() => {
-        subjectInputRef.current?.focus();
+        categoryInputRef.current?.focus();
       }, 100);
     }
   };
@@ -171,13 +155,13 @@ const HeroSection = () => {
   };
 
   const handleSearch = () => {
-    navigate(`/courses?location=${encodeURIComponent(location)}&subject=${encodeURIComponent(subject)}`);
+    navigate(`/courses?location=${encodeURIComponent(location)}&category=${encodeURIComponent(category)}`);
   };
 
   return (
     <div className="relative overflow-hidden">
       {/* Background with overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-rose-50 to-blue-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/15 dark:from-primary/20 dark:via-primary/10 dark:to-primary/25 -z-10"></div>
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-5 -z-20"></div>
 
       <div className="container mx-auto px-4 pt-32 pb-16 md:pt-40 md:pb-24">
@@ -186,7 +170,7 @@ const HeroSection = () => {
             FORGE | MASTER | EXCEL
           </h1>
           <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-12 max-w-3xl mx-auto">
-            Transform your career with industry-leading training programs. Discover expert-crafted courses designed to forge professional excellence and unlock your potential.
+            Transform your career with industry-leading training programs. Discover expert-crafted training designed to forge professional excellence and unlock your potential.
           </p>
 
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl max-w-2xl mx-auto border border-white/20">
@@ -207,7 +191,7 @@ const HeroSection = () => {
                 </div>
               </div>
               <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Step {currentStep} of 2: {currentStep === 1 ? 'Choose Your Location' : 'Select Your Subject'}
+                Step {currentStep} of 2: {currentStep === 1 ? 'Choose Your Location' : 'Select Your Category'}
               </p>
             </div>
             
@@ -277,13 +261,13 @@ const HeroSection = () => {
                     className="w-full mt-4 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleNextStep}
                   >
-                    Continue to Subject Selection
+                    Continue to Category Selection
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 )}
               </div>
 
-              {/* Step 2: Subject */}
+              {/* Step 2: Category */}
               <div className={`transition-all duration-500 ${currentStep === 2 ? 'opacity-100 transform-none' : 'opacity-0 transform scale-95 pointer-events-none absolute'}`}>
                 {/* Show selected location */}
                 {location && (
@@ -294,70 +278,70 @@ const HeroSection = () => {
                   </div>
                 )}
                 
-                <label htmlFor="subject" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  What would you like to learn?
+                <label htmlFor="category" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  What category interests you?
                 </label>
-                <Popover open={showSubjectPopover} onOpenChange={setShowSubjectPopover}>
+                <Popover open={showCategoryPopover} onOpenChange={setShowCategoryPopover}>
                   <PopoverTrigger asChild>
                     <div className="relative">
                       <Input 
-                        id="subject" 
-                        ref={subjectInputRef}
-                        placeholder="e.g. Web Development, Data Analysis..." 
+                        id="category" 
+                        ref={categoryInputRef}
+                        placeholder="e.g. Technology, Business, Marketing..." 
                         className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
-                        value={subject}
+                        value={category}
                         onChange={(e) => {
-                          setSubject(e.target.value);
+                          setCategory(e.target.value);
                           if (e.target.value) {
-                            setShowSubjectPopover(true);
+                            setShowCategoryPopover(true);
                           }
                         }}
                         onFocus={() => {
-                          if (subject) {
-                            setShowSubjectPopover(true);
+                          if (category) {
+                            setShowCategoryPopover(true);
                           }
                         }}
                       />
                     </div>
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 max-h-[200px] overflow-y-auto" align="start">
-                    {subjectSuggestions.length > 0 ? (
+                    {categorySuggestions.length > 0 ? (
                       <ul className="py-2">
-                        {subjectSuggestions.map((sub) => (
+                        {categorySuggestions.map((cat) => (
                           <li 
-                            key={sub} 
+                            key={cat} 
                             className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleSubjectSelect(sub)}
+                            onClick={() => handleCategorySelect(cat)}
                           >
-                            {sub}
+                            {cat}
                           </li>
                         ))}
                       </ul>
-                    ) : subject ? (
+                    ) : category ? (
                       <div className="p-4 text-sm text-muted-foreground">
-                        No subjects found
+                        No categories found
                       </div>
-                    ) : location && (subjectsByLocation as Record<string, string[]>)[location] ? (
+                    ) : location && (categoriesByLocation as Record<string, string[]>)[location] ? (
                       <ul className="py-2">
-                        {(subjectsByLocation as Record<string, string[]>)[location].map((sub) => (
+                        {(categoriesByLocation as Record<string, string[]>)[location].map((cat) => (
                           <li 
-                            key={sub} 
+                            key={cat} 
                             className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleSubjectSelect(sub)}
+                            onClick={() => handleCategorySelect(cat)}
                           >
-                            {sub}
+                            {cat}
                           </li>
                         ))}
                       </ul>
                     ) : (
                       <ul className="py-2">
-                        {allSubjects.slice(0, 10).map((sub) => (
+                        {allCategories.slice(0, 10).map((cat) => (
                           <li 
-                            key={sub} 
+                            key={cat} 
                             className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleSubjectSelect(sub)}
+                            onClick={() => handleCategorySelect(cat)}
                           >
-                            {sub}
+                            {cat}
                           </li>
                         ))}
                       </ul>
@@ -376,7 +360,7 @@ const HeroSection = () => {
                   <Button 
                     className="flex-1 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleSearch}
-                    disabled={!subject}
+                    disabled={!category}
                   >
                     <Search className="h-5 w-5 mr-2" />
                     Find Training

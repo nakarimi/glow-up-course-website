@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -12,8 +11,8 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-// Extended course data
-const coursesData = [
+// Extended training data
+const trainingData = [
   {
     id: 1,
     title: "Management Training",
@@ -24,7 +23,7 @@ const coursesData = [
     price: 299,
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     availableDates: ["2025-06-15", "2025-07-10", "2025-08-22"],
-    description: "This comprehensive management training course will help you develop essential leadership skills to effectively manage teams and drive results. Perfect for new and aspiring managers.",
+    description: "This comprehensive management training program will help you develop essential leadership skills to effectively manage teams and drive results. Perfect for new and aspiring managers.",
     accreditedBy: "CMI"
   },
   {
@@ -172,9 +171,9 @@ const coursesData = [
   },
 ];
 
-// Get all available dates from courses
+// Get all available dates from training
 const getAllAvailableDates = () => {
-  const dates = coursesData.flatMap(course => course.availableDates);
+  const dates = trainingData.flatMap(training => training.availableDates);
   return [...new Set(dates)].sort();
 };
 
@@ -186,7 +185,7 @@ const availableDatesOptions = getAllAvailableDates();
 // Items per page for pagination
 const ITEMS_PER_PAGE = 6;
 
-const Courses = () => {
+const Training = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -198,7 +197,7 @@ const Courses = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedAccreditations, setSelectedAccreditations] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedCourseDates, setSelectedCourseDates] = useState<{[key: number]: string}>({});
+  const [selectedTrainingDates, setSelectedTrainingDates] = useState<{[key: number]: string}>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   
@@ -267,14 +266,14 @@ const Courses = () => {
     });
   };
   
-  // Sort and filter courses
-  const filteredCourses = coursesData.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          course.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation = selectedLocations.length === 0 || selectedLocations.includes(course.location);
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(course.category);
-    const matchesAccreditation = selectedAccreditations.length === 0 || selectedAccreditations.includes(course.accreditedBy);
-    const matchesDate = !selectedDate || course.availableDates.includes(selectedDate);
+  // Sort and filter training
+  const filteredTraining = trainingData.filter(training => {
+    const matchesSearch = training.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          training.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesLocation = selectedLocations.length === 0 || selectedLocations.includes(training.location);
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(training.category);
+    const matchesAccreditation = selectedAccreditations.length === 0 || selectedAccreditations.includes(training.accreditedBy);
+    const matchesDate = !selectedDate || training.availableDates.includes(selectedDate);
     return matchesSearch && matchesLocation && matchesCategory && matchesAccreditation && matchesDate;
   }).sort((a, b) => {
     // Sort by title
@@ -286,26 +285,26 @@ const Courses = () => {
   });
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
-  const currentCourses = filteredCourses.slice(
+  const totalPages = Math.ceil(filteredTraining.length / ITEMS_PER_PAGE);
+  const currentTraining = filteredTraining.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  const handleDateChange = (courseId: number, date: string) => {
-    setSelectedCourseDates(prev => ({
+  const handleDateChange = (trainingId: number, date: string) => {
+    setSelectedTrainingDates(prev => ({
       ...prev,
-      [courseId]: date
+      [trainingId]: date
     }));
   };
   
-  const handleViewCourse = (courseId: number) => {
-    const selectedDateForCourse = selectedCourseDates[courseId] || "";
-    navigate(`/course/${courseId}${selectedDateForCourse ? `?date=${selectedDateForCourse}` : ''}`);
+  const handleViewTraining = (trainingId: number) => {
+    const selectedDateForTraining = selectedTrainingDates[trainingId] || "";
+    navigate(`/course/${trainingId}${selectedDateForTraining ? `?date=${selectedDateForTraining}` : ''}`);
   };
   
-  const handleCardClick = (courseId: number) => {
-    navigate(`/course/${courseId}`);
+  const handleCardClick = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
   };
   
   const handleSortToggle = () => {
@@ -321,7 +320,7 @@ const Courses = () => {
         <div className="h-64 md:h-80 overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80" 
-            alt="Training Courses Banner" 
+            alt="Training Programs Banner" 
             className="w-full h-full object-cover"
           />
         </div>
@@ -330,15 +329,15 @@ const Courses = () => {
         <div className="bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Courses</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Training Programs</h1>
               <p className="text-muted-foreground text-lg">
-                Browse our extensive selection of professional training courses
+                Browse our extensive selection of professional training programs
               </p>
             </div>
           </div>
         </div>
         
-        {/* Courses listing */}
+        {/* Training listing */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-8">
@@ -354,7 +353,7 @@ const Courses = () => {
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input 
-                        placeholder="Search courses..." 
+                        placeholder="Search training..." 
                         className="pl-10"
                         value={searchTerm}
                         onChange={(e) => {
@@ -498,14 +497,14 @@ const Courses = () => {
                 </div>
               </div>
               
-              {/* Courses grid */}
+              {/* Training grid */}
               <div className="lg:w-3/4">
                 <div className="flex justify-between items-center mb-8">
                   <div>
                     <p className="text-muted-foreground">
-                      Showing {filteredCourses.length > 0 ? 
-                        `${(currentPage - 1) * ITEMS_PER_PAGE + 1}-${Math.min(currentPage * ITEMS_PER_PAGE, filteredCourses.length)} of ${filteredCourses.length}`
-                        : "0"} courses
+                      Showing {filteredTraining.length > 0 ? 
+                        `${(currentPage - 1) * ITEMS_PER_PAGE + 1}-${Math.min(currentPage * ITEMS_PER_PAGE, filteredTraining.length)} of ${filteredTraining.length}`
+                        : "0"} training programs
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -538,22 +537,22 @@ const Courses = () => {
                   </div>
                 </div>
                 
-                {currentCourses.length === 0 ? (
+                {currentTraining.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground">No courses matching your filters.</p>
+                    <p className="text-muted-foreground">No training programs matching your filters.</p>
                   </div>
                 ) : view === "grid" ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentCourses.map(course => (
+                    {currentTraining.map(training => (
                       <Card 
-                        key={course.id} 
+                        key={training.id} 
                         className="overflow-hidden hover-scale border-l-4"
-                        style={{ borderLeftColor: course.categoryColor }}
+                        style={{ borderLeftColor: training.categoryColor }}
                       >
-                        <div className="h-48 overflow-hidden cursor-pointer" onClick={() => handleCardClick(course.id)}>
+                        <div className="h-48 overflow-hidden cursor-pointer" onClick={() => handleCardClick(training.id)}>
                           <img 
-                            src={course.image} 
-                            alt={course.title} 
+                            src={training.image} 
+                            alt={training.title} 
                             className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
                           />
                         </div>
@@ -561,12 +560,12 @@ const Courses = () => {
                           <div className="flex justify-end mb-2">
                             <div className="relative w-full">
                               <select
-                                className="w-full p-2 text-sm border rounded-md dark:bg-slate-800 dark:border-slate-700"
-                                value={selectedCourseDates[course.id] || ""}
-                                onChange={(e) => handleDateChange(course.id, e.target.value)}
+                                className="w-full pl-10 p-2 border rounded-md bg-background dark:bg-slate-800 dark:border-slate-700"
+                                value={selectedTrainingDates[training.id] || ""}
+                                onChange={(e) => handleDateChange(training.id, e.target.value)}
                               >
                                 <option value="">Choose a date</option>
-                                {course.availableDates.map(date => (
+                                {training.availableDates.map(date => (
                                   <option key={date} value={date}>
                                     {formatDate(date)}
                                   </option>
@@ -579,30 +578,30 @@ const Courses = () => {
                             <div className="flex items-center justify-between">
                               <h3 
                                 className="text-xl font-bold cursor-pointer hover:text-primary"
-                                onClick={() => handleCardClick(course.id)}
+                                onClick={() => handleCardClick(training.id)}
                               >
-                                {course.title}
+                                {training.title}
                               </h3>
                               <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-800 dark:text-blue-200">
-                                {course.category}
+                                {training.category}
                               </span>
                             </div>
                             <div className="text-sm text-muted-foreground mt-1">
-                              <p>Next date: {formatDate(course.availableDates[0])}</p>
-                              <p>Location: {course.location} • Duration: {course.duration}</p>
+                              <p>Next date: {formatDate(training.availableDates[0])}</p>
+                              <p>Location: {training.location} • Duration: {training.duration}</p>
                             </div>
                           </div>
                           
                           <div className="mt-2 flex-grow">
-                            <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{training.description}</p>
                           </div>
                           
                           <div className="mt-4">
                             <Button 
                               className="w-full"
-                              onClick={() => handleViewCourse(course.id)}
+                              onClick={() => handleViewTraining(training.id)}
                             >
-                              View Course
+                              View Training
                             </Button>
                           </div>
                         </div>
@@ -611,19 +610,19 @@ const Courses = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {currentCourses.map(course => (
+                    {currentTraining.map(training => (
                       <div 
-                        key={course.id} 
+                        key={training.id} 
                         className="flex flex-col md:flex-row gap-4 bg-white dark:bg-slate-900 p-0 rounded-lg border border-slate-200 dark:border-slate-800 hover-scale overflow-hidden border-l-4"
-                        style={{ borderLeftColor: course.categoryColor }}
+                        style={{ borderLeftColor: training.categoryColor }}
                       >
                         <div 
                           className="md:w-1/4 h-40 md:h-auto overflow-hidden cursor-pointer"
-                          onClick={() => handleCardClick(course.id)}
+                          onClick={() => handleCardClick(training.id)}
                         >
                           <img 
-                            src={course.image} 
-                            alt={course.title} 
+                            src={training.image} 
+                            alt={training.title} 
                             className="w-full h-full object-cover" 
                           />
                         </div>
@@ -633,27 +632,27 @@ const Courses = () => {
                               <div>
                                 <h3 
                                   className="text-xl font-bold cursor-pointer hover:text-primary"
-                                  onClick={() => handleCardClick(course.id)}
+                                  onClick={() => handleCardClick(training.id)}
                                 >
-                                  {course.title}
+                                  {training.title}
                                 </h3>
                                 <div className="text-sm text-muted-foreground mt-1">
-                                  <p>Next date: {formatDate(course.availableDates[0])}</p>
-                                  <p>Location: {course.location} • Duration: {course.duration}</p>
+                                  <p>Next date: {formatDate(training.availableDates[0])}</p>
+                                  <p>Location: {training.location} • Duration: {training.duration}</p>
                                 </div>
                               </div>
                               <div className="flex flex-col items-end gap-2">
                                 <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-800 dark:text-blue-200">
-                                  {course.category}
+                                  {training.category}
                                 </span>
                                 <div className="w-48">
                                   <select
                                     className="w-full p-2 text-sm border rounded-md dark:bg-slate-800 dark:border-slate-700"
-                                    value={selectedCourseDates[course.id] || ""}
-                                    onChange={(e) => handleDateChange(course.id, e.target.value)}
+                                    value={selectedTrainingDates[training.id] || ""}
+                                    onChange={(e) => handleDateChange(training.id, e.target.value)}
                                   >
                                     <option value="">Choose a date</option>
-                                    {course.availableDates.map(date => (
+                                    {training.availableDates.map(date => (
                                       <option key={date} value={date}>
                                         {formatDate(date)}
                                       </option>
@@ -664,13 +663,13 @@ const Courses = () => {
                             </div>
                             
                             <div className="my-2">
-                              <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
+                              <p className="text-sm text-muted-foreground line-clamp-2">{training.description}</p>
                             </div>
                           </div>
                           
                           <div className="flex items-center justify-end w-full mt-4">
-                            <Button onClick={() => handleViewCourse(course.id)}>
-                              View Course
+                            <Button onClick={() => handleViewTraining(training.id)}>
+                              View Training
                             </Button>
                           </div>
                         </div>
@@ -737,4 +736,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default Training;
