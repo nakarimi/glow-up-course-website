@@ -140,6 +140,11 @@ const HeroSection = () => {
   const handleLocationSelect = (loc: string) => {
     setLocation(loc);
     setShowLocationPopover(false);
+    // Auto-advance to next step
+    setCurrentStep(2);
+    setTimeout(() => {
+      subjectInputRef.current?.focus();
+    }, 100);
   };
 
   const handleSubjectSelect = (sub: string) => {
@@ -177,7 +182,7 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="text-center max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary/60">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-purple-600 to-blue-600">
             FORGE | MASTER | EXCEL
           </h1>
           <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-12 max-w-3xl mx-auto">
@@ -188,15 +193,15 @@ const HeroSection = () => {
             <div className="mb-6">
               <div className="flex items-center justify-center mb-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 1 ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
+                  currentStep >= 1 ? 'bg-gradient-to-r from-emerald-500 to-purple-500 text-white shadow-lg' : 'bg-gray-200 text-gray-500'
                 }`}>
                   1
                 </div>
                 <div className={`h-1 w-16 mx-2 transition-all duration-300 rounded-full ${
-                  currentStep >= 2 ? 'bg-gradient-to-r from-primary to-primary/80' : 'bg-gray-200'
+                  currentStep >= 2 ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-200'
                 }`}></div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 2 ? 'bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
+                  currentStep >= 2 ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg' : 'bg-gray-200 text-gray-500'
                 }`}>
                   2
                 </div>
@@ -219,7 +224,7 @@ const HeroSection = () => {
                         id="location" 
                         ref={locationInputRef}
                         placeholder="e.g. Online, London, Manchester..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
+                        className="w-full h-12 text-lg focus:ring-2 focus:ring-emerald-500/30 border-emerald-500/20" 
                         value={location}
                         onChange={(e) => {
                           setLocation(e.target.value);
@@ -241,7 +246,7 @@ const HeroSection = () => {
                         {locationSuggestions.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-emerald-500/10 cursor-pointer transition-colors"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -257,7 +262,7 @@ const HeroSection = () => {
                         {locations.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-emerald-500/10 cursor-pointer transition-colors"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -269,7 +274,7 @@ const HeroSection = () => {
                 </Popover>
                 {location && (
                   <Button 
-                    className="w-full mt-4 h-12 text-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full mt-4 h-12 text-lg bg-gradient-to-r from-emerald-500 to-purple-500 hover:from-emerald-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleNextStep}
                   >
                     Continue to Subject Selection
@@ -290,7 +295,7 @@ const HeroSection = () => {
                         id="subject" 
                         ref={subjectInputRef}
                         placeholder="e.g. Web Development, Data Analysis..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
+                        className="w-full h-12 text-lg focus:ring-2 focus:ring-purple-500/30 border-purple-500/20" 
                         value={subject}
                         onChange={(e) => {
                           setSubject(e.target.value);
@@ -312,7 +317,7 @@ const HeroSection = () => {
                         {subjectSuggestions.map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -328,7 +333,7 @@ const HeroSection = () => {
                         {(subjectsByLocation as Record<string, string[]>)[location].map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -340,7 +345,7 @@ const HeroSection = () => {
                         {allSubjects.slice(0, 10).map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -354,18 +359,18 @@ const HeroSection = () => {
                 <div className="flex gap-3 mt-4">
                   <Button 
                     variant="outline"
-                    className="flex-1 h-12 text-lg border-primary/30 hover:bg-primary/5"
+                    className="flex-1 h-12 text-lg border-purple-500/30 hover:bg-purple-500/5"
                     onClick={handlePreviousStep}
                   >
                     Back
                   </Button>
                   <Button 
-                    className="flex-1 h-12 text-lg bg-gradient-to-r from-primary/80 to-primary/60 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="flex-1 h-12 text-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleSearch}
                     disabled={!subject}
                   >
                     <Search className="h-5 w-5 mr-2" />
-                    Find Courses
+                    Find Training
                   </Button>
                 </div>
               </div>
