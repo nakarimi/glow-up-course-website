@@ -182,7 +182,7 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="text-center max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-purple-600 to-blue-600">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-primary">
             FORGE | MASTER | EXCEL
           </h1>
           <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-12 max-w-3xl mx-auto">
@@ -193,15 +193,15 @@ const HeroSection = () => {
             <div className="mb-6">
               <div className="flex items-center justify-center mb-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 1 ? 'bg-gradient-to-r from-emerald-500 to-purple-500 text-white shadow-lg' : 'bg-gray-200 text-gray-500'
+                  currentStep >= 1 ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
                 }`}>
                   1
                 </div>
                 <div className={`h-1 w-16 mx-2 transition-all duration-300 rounded-full ${
-                  currentStep >= 2 ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-200'
+                  currentStep >= 2 ? 'bg-primary' : 'bg-gray-200'
                 }`}></div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 2 ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg' : 'bg-gray-200 text-gray-500'
+                  currentStep >= 2 ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
                 }`}>
                   2
                 </div>
@@ -224,7 +224,7 @@ const HeroSection = () => {
                         id="location" 
                         ref={locationInputRef}
                         placeholder="e.g. Online, London, Manchester..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-emerald-500/30 border-emerald-500/20" 
+                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
                         value={location}
                         onChange={(e) => {
                           setLocation(e.target.value);
@@ -246,7 +246,7 @@ const HeroSection = () => {
                         {locationSuggestions.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-emerald-500/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -262,7 +262,7 @@ const HeroSection = () => {
                         {locations.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-emerald-500/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -274,7 +274,7 @@ const HeroSection = () => {
                 </Popover>
                 {location && (
                   <Button 
-                    className="w-full mt-4 h-12 text-lg bg-gradient-to-r from-emerald-500 to-purple-500 hover:from-emerald-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full mt-4 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleNextStep}
                   >
                     Continue to Subject Selection
@@ -285,6 +285,15 @@ const HeroSection = () => {
 
               {/* Step 2: Subject */}
               <div className={`transition-all duration-500 ${currentStep === 2 ? 'opacity-100 transform-none' : 'opacity-0 transform scale-95 pointer-events-none absolute'}`}>
+                {/* Show selected location */}
+                {location && (
+                  <div className="mb-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                    <p className="text-sm text-primary font-medium">
+                      Training Location: <span className="font-semibold">{location}</span>
+                    </p>
+                  </div>
+                )}
+                
                 <label htmlFor="subject" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   What would you like to learn?
                 </label>
@@ -295,7 +304,7 @@ const HeroSection = () => {
                         id="subject" 
                         ref={subjectInputRef}
                         placeholder="e.g. Web Development, Data Analysis..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-purple-500/30 border-purple-500/20" 
+                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
                         value={subject}
                         onChange={(e) => {
                           setSubject(e.target.value);
@@ -317,7 +326,7 @@ const HeroSection = () => {
                         {subjectSuggestions.map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -333,7 +342,7 @@ const HeroSection = () => {
                         {(subjectsByLocation as Record<string, string[]>)[location].map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -345,7 +354,7 @@ const HeroSection = () => {
                         {allSubjects.slice(0, 10).map((sub) => (
                           <li 
                             key={sub} 
-                            className="px-4 py-3 hover:bg-purple-500/10 cursor-pointer transition-colors"
+                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
                             onClick={() => handleSubjectSelect(sub)}
                           >
                             {sub}
@@ -359,13 +368,13 @@ const HeroSection = () => {
                 <div className="flex gap-3 mt-4">
                   <Button 
                     variant="outline"
-                    className="flex-1 h-12 text-lg border-purple-500/30 hover:bg-purple-500/5"
+                    className="flex-1 h-12 text-lg border-primary/30 hover:bg-primary/5 text-primary"
                     onClick={handlePreviousStep}
                   >
                     Back
                   </Button>
                   <Button 
-                    className="flex-1 h-12 text-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="flex-1 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleSearch}
                     disabled={!subject}
                   >

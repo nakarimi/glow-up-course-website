@@ -117,11 +117,11 @@ const Contact = () => {
                 <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
                 <div className="space-y-8">
                   <div className="flex items-start">
-                    <MapPin className="h-6 w-6 text-blue-600 dark:text-blue-500 mr-4 mt-1" />
+                    <MapPin className="h-6 w-6 text-primary mr-4 mt-1" />
                     <div>
                       <h3 className="font-medium">Address</h3>
                       <address className="not-italic mt-1 text-muted-foreground">
-                        CourseHub Training<br />
+                        SkillForge Training<br />
                         123 Training Street<br />
                         Education City<br />
                         EC1 2AB
@@ -130,7 +130,7 @@ const Contact = () => {
                   </div>
                   
                   <div className="flex items-start">
-                    <Phone className="h-6 w-6 text-blue-600 dark:text-blue-500 mr-4 mt-1" />
+                    <Phone className="h-6 w-6 text-primary mr-4 mt-1" />
                     <div>
                       <h3 className="font-medium">Phone</h3>
                       <p className="mt-1 text-muted-foreground">+44 1234 567890</p>
@@ -138,10 +138,10 @@ const Contact = () => {
                   </div>
                   
                   <div className="flex items-start">
-                    <Mail className="h-6 w-6 text-blue-600 dark:text-blue-500 mr-4 mt-1" />
+                    <Mail className="h-6 w-6 text-primary mr-4 mt-1" />
                     <div>
                       <h3 className="font-medium">Email</h3>
-                      <p className="mt-1 text-muted-foreground">info@coursehub.com</p>
+                      <p className="mt-1 text-muted-foreground">info@skillforge.com</p>
                     </div>
                   </div>
                 </div>
