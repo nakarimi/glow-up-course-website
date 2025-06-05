@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const locations = [
@@ -19,79 +19,94 @@ const locations = [
   "Sheffield"
 ];
 
-const categoriesByLocation = {
+const subjectsByLocation = {
   "Online": [
-    "Technology",
-    "Business",
-    "Marketing",
-    "Design",
-    "Finance"
+    "Web Development",
+    "Data Analysis",
+    "Digital Marketing",
+    "Leadership Skills",
+    "Project Management",
+    "UX Design",
+    "Business Analytics",
+    "Python Programming",
+    "Content Writing"
   ],
   "London": [
-    "Technology",
-    "Business",
-    "Marketing",
-    "Finance"
+    "Web Development",
+    "Management Training",
+    "Digital Marketing",
+    "Financial Analysis",
+    "Business Strategy",
+    "UI/UX Design"
   ],
   "Manchester": [
-    "Marketing",
-    "Technology",
-    "Business"
+    "Digital Marketing",
+    "Web Development",
+    "Leadership Skills",
+    "Sales Techniques",
+    "Customer Service"
   ],
   "Birmingham": [
-    "Business",
-    "Technology",
-    "Marketing"
+    "Project Management",
+    "Business Analytics",
+    "Leadership Skills",
+    "Data Science",
+    "Marketing Strategy"
   ],
   "Leeds": [
-    "Marketing",
-    "Business"
+    "Digital Marketing",
+    "Content Creation",
+    "SEO Optimization",
+    "Business Management"
   ],
   "Glasgow": [
-    "Finance",
-    "Technology",
-    "Business"
+    "Financial Planning",
+    "Data Analysis",
+    "Project Management",
+    "Business Strategy"
   ],
   "Edinburgh": [
-    "Technology",
-    "Marketing",
-    "Business"
+    "Data Analysis",
+    "Digital Marketing",
+    "Leadership Skills",
+    "Business Strategy"
   ],
   "Liverpool": [
-    "Technology",
-    "Marketing",
-    "Business"
+    "Web Development",
+    "Digital Marketing",
+    "Business Management",
+    "Marketing Strategy"
   ],
   "Bristol": [
-    "Design",
-    "Technology",
-    "Marketing",
-    "Business"
+    "UX Design",
+    "Web Development",
+    "Digital Marketing",
+    "Leadership Skills"
   ],
   "Sheffield": [
-    "Business",
-    "Technology",
-    "Marketing"
+    "Project Management",
+    "Data Analysis",
+    "Business Strategy",
+    "Marketing Strategy"
   ]
 };
 
-const allCategories = Array.from(
+const allSubjects = Array.from(
   new Set(
-    Object.values(categoriesByLocation).flatMap(categories => categories)
+    Object.values(subjectsByLocation).flatMap(subjects => subjects)
   )
 ).sort();
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
   const [location, setLocation] = useState("");
-  const [category, setCategory] = useState("");
+  const [subject, setSubject] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
-  const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
+  const [subjectSuggestions, setSubjectSuggestions] = useState<string[]>([]);
   const [showLocationPopover, setShowLocationPopover] = useState(false);
-  const [showCategoryPopover, setShowCategoryPopover] = useState(false);
+  const [showSubjectPopover, setShowSubjectPopover] = useState(false);
   const locationInputRef = useRef<HTMLInputElement>(null);
-  const categoryInputRef = useRef<HTMLInputElement>(null);
+  const subjectInputRef = useRef<HTMLInputElement>(null);
 
   // Filter location suggestions based on input
   useEffect(() => {
@@ -105,101 +120,63 @@ const HeroSection = () => {
     }
   }, [location]);
 
-  // Filter category suggestions based on selected location and input
+  // Filter subject suggestions based on selected location and input
   useEffect(() => {
-    if (category) {
-      let availableCategories = location 
-        ? (categoriesByLocation as Record<string, string[]>)[location] || allCategories
-        : allCategories;
+    if (subject) {
+      let availableSubjects = location 
+        ? (subjectsByLocation as Record<string, string[]>)[location] || allSubjects
+        : allSubjects;
         
-      const filtered = availableCategories.filter(cat => 
-        cat.toLowerCase().includes(category.toLowerCase())
+      const filtered = availableSubjects.filter(sub => 
+        sub.toLowerCase().includes(subject.toLowerCase())
       );
-      setCategorySuggestions(filtered);
+      setSubjectSuggestions(filtered);
     } else {
-      setCategorySuggestions([]);
+      setSubjectSuggestions([]);
     }
-  }, [category, location]);
+  }, [subject, location]);
 
   const handleLocationSelect = (loc: string) => {
     setLocation(loc);
     setShowLocationPopover(false);
-    // Auto-advance to next step
-    setCurrentStep(2);
     setTimeout(() => {
-      categoryInputRef.current?.focus();
+      subjectInputRef.current?.focus();
     }, 100);
   };
 
-  const handleCategorySelect = (cat: string) => {
-    setCategory(cat);
-    setShowCategoryPopover(false);
-  };
-
-  const handleNextStep = () => {
-    if (currentStep === 1 && location) {
-      setCurrentStep(2);
-      setTimeout(() => {
-        categoryInputRef.current?.focus();
-      }, 100);
-    }
-  };
-
-  const handlePreviousStep = () => {
-    if (currentStep === 2) {
-      setCurrentStep(1);
-      setTimeout(() => {
-        locationInputRef.current?.focus();
-      }, 100);
-    }
+  const handleSubjectSelect = (sub: string) => {
+    setSubject(sub);
+    setShowSubjectPopover(false);
   };
 
   const handleSearch = () => {
-    navigate(`/courses?location=${encodeURIComponent(location)}&category=${encodeURIComponent(category)}`);
+    navigate(`/courses?location=${encodeURIComponent(location)}&subject=${encodeURIComponent(subject)}`);
   };
 
   return (
     <div className="relative overflow-hidden">
       {/* Background with overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/15 dark:from-primary/20 dark:via-primary/10 dark:to-primary/25 -z-10"></div>
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-5 -z-20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 -z-10"></div>
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-10 -z-20"></div>
 
       <div className="container mx-auto px-4 pt-32 pb-16 md:pt-40 md:pb-24">
-        <div className="text-center max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-primary">
-            FORGE | MASTER | EXCEL
+        <div className="text-center max-w-3xl mx-auto animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400">
+            BOOK | TRAIN | LEARN
           </h1>
-          <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-12 max-w-3xl mx-auto">
-            Transform your career with industry-leading training programs. Discover expert-crafted training designed to forge professional excellence and unlock your potential.
+          <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
+            Discover expert-led training courses designed to boost your skills and advance your career. Find the perfect learning opportunity today.
           </p>
 
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl max-w-2xl mx-auto border border-white/20">
-            <div className="mb-6">
-              <div className="flex items-center justify-center mb-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 1 ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
-                }`}>
-                  1
-                </div>
-                <div className={`h-1 w-16 mx-2 transition-all duration-300 rounded-full ${
-                  currentStep >= 2 ? 'bg-primary' : 'bg-gray-200'
-                }`}></div>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                  currentStep >= 2 ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-gray-200 text-gray-500'
-                }`}>
-                  2
-                </div>
-              </div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Step {currentStep} of 2: {currentStep === 1 ? 'Choose Your Location' : 'Select Your Category'}
-              </p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-lg max-w-2xl mx-auto">
+            <div className="text-left mb-4">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Find Your Course</p>
             </div>
             
-            <div className="space-y-6">
-              {/* Step 1: Location */}
-              <div className={`transition-all duration-500 ${currentStep === 1 ? 'opacity-100 transform-none' : 'opacity-0 transform scale-95 pointer-events-none absolute'}`}>
-                <label htmlFor="location" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Where would you like to train?
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="location" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Location
                 </label>
                 <Popover open={showLocationPopover} onOpenChange={setShowLocationPopover}>
                   <PopoverTrigger asChild>
@@ -207,8 +184,8 @@ const HeroSection = () => {
                       <Input 
                         id="location" 
                         ref={locationInputRef}
-                        placeholder="e.g. Online, London, Manchester..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
+                        placeholder="e.g. Online" 
+                        className="w-full" 
                         value={location}
                         onChange={(e) => {
                           setLocation(e.target.value);
@@ -230,7 +207,7 @@ const HeroSection = () => {
                         {locationSuggestions.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -246,7 +223,7 @@ const HeroSection = () => {
                         {locations.map((loc) => (
                           <li 
                             key={loc} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
                             onClick={() => handleLocationSelect(loc)}
                           >
                             {loc}
@@ -256,118 +233,88 @@ const HeroSection = () => {
                     )}
                   </PopoverContent>
                 </Popover>
-                {location && (
-                  <Button 
-                    className="w-full mt-4 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                    onClick={handleNextStep}
-                  >
-                    Continue to Category Selection
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                )}
               </div>
-
-              {/* Step 2: Category */}
-              <div className={`transition-all duration-500 ${currentStep === 2 ? 'opacity-100 transform-none' : 'opacity-0 transform scale-95 pointer-events-none absolute'}`}>
-                {/* Show selected location */}
-                {location && (
-                  <div className="mb-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
-                    <p className="text-sm text-primary font-medium">
-                      Training Location: <span className="font-semibold">{location}</span>
-                    </p>
-                  </div>
-                )}
-                
-                <label htmlFor="category" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  What category interests you?
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Subject
                 </label>
-                <Popover open={showCategoryPopover} onOpenChange={setShowCategoryPopover}>
+                <Popover open={showSubjectPopover} onOpenChange={setShowSubjectPopover}>
                   <PopoverTrigger asChild>
                     <div className="relative">
                       <Input 
-                        id="category" 
-                        ref={categoryInputRef}
-                        placeholder="e.g. Technology, Business, Marketing..." 
-                        className="w-full h-12 text-lg focus:ring-2 focus:ring-primary/30 border-primary/20" 
-                        value={category}
+                        id="subject" 
+                        ref={subjectInputRef}
+                        placeholder="e.g. My Course/Training" 
+                        className="w-full" 
+                        value={subject}
                         onChange={(e) => {
-                          setCategory(e.target.value);
+                          setSubject(e.target.value);
                           if (e.target.value) {
-                            setShowCategoryPopover(true);
+                            setShowSubjectPopover(true);
                           }
                         }}
                         onFocus={() => {
-                          if (category) {
-                            setShowCategoryPopover(true);
+                          if (subject) {
+                            setShowSubjectPopover(true);
                           }
                         }}
                       />
                     </div>
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 max-h-[200px] overflow-y-auto" align="start">
-                    {categorySuggestions.length > 0 ? (
+                    {subjectSuggestions.length > 0 ? (
                       <ul className="py-2">
-                        {categorySuggestions.map((cat) => (
+                        {subjectSuggestions.map((sub) => (
                           <li 
-                            key={cat} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleCategorySelect(cat)}
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
                           >
-                            {cat}
+                            {sub}
                           </li>
                         ))}
                       </ul>
-                    ) : category ? (
+                    ) : subject ? (
                       <div className="p-4 text-sm text-muted-foreground">
-                        No categories found
+                        No subjects found
                       </div>
-                    ) : location && (categoriesByLocation as Record<string, string[]>)[location] ? (
+                    ) : location && (subjectsByLocation as Record<string, string[]>)[location] ? (
                       <ul className="py-2">
-                        {(categoriesByLocation as Record<string, string[]>)[location].map((cat) => (
+                        {(subjectsByLocation as Record<string, string[]>)[location].map((sub) => (
                           <li 
-                            key={cat} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleCategorySelect(cat)}
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
                           >
-                            {cat}
+                            {sub}
                           </li>
                         ))}
                       </ul>
                     ) : (
                       <ul className="py-2">
-                        {allCategories.slice(0, 10).map((cat) => (
+                        {allSubjects.slice(0, 10).map((sub) => (
                           <li 
-                            key={cat} 
-                            className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                            onClick={() => handleCategorySelect(cat)}
+                            key={sub} 
+                            className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+                            onClick={() => handleSubjectSelect(sub)}
                           >
-                            {cat}
+                            {sub}
                           </li>
                         ))}
                       </ul>
                     )}
                   </PopoverContent>
                 </Popover>
-                
-                <div className="flex gap-3 mt-4">
-                  <Button 
-                    variant="outline"
-                    className="flex-1 h-12 text-lg border-primary/30 hover:bg-primary/5 text-primary"
-                    onClick={handlePreviousStep}
-                  >
-                    Back
-                  </Button>
-                  <Button 
-                    className="flex-1 h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                    onClick={handleSearch}
-                    disabled={!category}
-                  >
-                    <Search className="h-5 w-5 mr-2" />
-                    Find Training
-                  </Button>
-                </div>
               </div>
             </div>
+
+            <Button 
+              className="w-full md:w-auto"
+              onClick={handleSearch}
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Find Courses
+            </Button>
           </div>
         </div>
       </div>
